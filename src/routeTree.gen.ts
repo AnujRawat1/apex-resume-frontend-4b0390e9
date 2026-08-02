@@ -10,8 +10,12 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AiInterviewRouteImport } from './routes/ai-interview'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as HistoryRouteImport } from './routes/history'
+import { Route as JdAnalyzerRouteImport } from './routes/jd-analyzer'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ResumeAnalyzerRouteImport } from './routes/resume-analyzer'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SignupRouteImport } from './routes/signup'
 
@@ -20,14 +24,34 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AiInterviewRoute = AiInterviewRouteImport.update({
+  id: '/ai-interview',
+  path: '/ai-interview',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HistoryRoute = HistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JdAnalyzerRoute = JdAnalyzerRouteImport.update({
+  id: '/jd-analyzer',
+  path: '/jd-analyzer',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResumeAnalyzerRoute = ResumeAnalyzerRouteImport.update({
+  id: '/resume-analyzer',
+  path: '/resume-analyzer',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -43,38 +67,82 @@ const SignupRoute = SignupRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ai-interview': typeof AiInterviewRoute
   '/dashboard': typeof DashboardRoute
+  '/history': typeof HistoryRoute
+  '/jd-analyzer': typeof JdAnalyzerRoute
   '/login': typeof LoginRoute
+  '/resume-analyzer': typeof ResumeAnalyzerRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ai-interview': typeof AiInterviewRoute
   '/dashboard': typeof DashboardRoute
+  '/history': typeof HistoryRoute
+  '/jd-analyzer': typeof JdAnalyzerRoute
   '/login': typeof LoginRoute
+  '/resume-analyzer': typeof ResumeAnalyzerRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/ai-interview': typeof AiInterviewRoute
   '/dashboard': typeof DashboardRoute
+  '/history': typeof HistoryRoute
+  '/jd-analyzer': typeof JdAnalyzerRoute
   '/login': typeof LoginRoute
+  '/resume-analyzer': typeof ResumeAnalyzerRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/login' | '/settings' | '/signup'
+  fullPaths:
+    | '/'
+    | '/ai-interview'
+    | '/dashboard'
+    | '/history'
+    | '/jd-analyzer'
+    | '/login'
+    | '/resume-analyzer'
+    | '/settings'
+    | '/signup'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/login' | '/settings' | '/signup'
-  id: '__root__' | '/' | '/dashboard' | '/login' | '/settings' | '/signup'
+  to:
+    | '/'
+    | '/ai-interview'
+    | '/dashboard'
+    | '/history'
+    | '/jd-analyzer'
+    | '/login'
+    | '/resume-analyzer'
+    | '/settings'
+    | '/signup'
+  id:
+    | '__root__'
+    | '/'
+    | '/ai-interview'
+    | '/dashboard'
+    | '/history'
+    | '/jd-analyzer'
+    | '/login'
+    | '/resume-analyzer'
+    | '/settings'
+    | '/signup'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AiInterviewRoute: typeof AiInterviewRoute
   DashboardRoute: typeof DashboardRoute
+  HistoryRoute: typeof HistoryRoute
+  JdAnalyzerRoute: typeof JdAnalyzerRoute
   LoginRoute: typeof LoginRoute
+  ResumeAnalyzerRoute: typeof ResumeAnalyzerRoute
   SettingsRoute: typeof SettingsRoute
   SignupRoute: typeof SignupRoute
 }
@@ -88,6 +156,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ai-interview': {
+      id: '/ai-interview'
+      path: '/ai-interview'
+      fullPath: '/ai-interview'
+      preLoaderRoute: typeof AiInterviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
@@ -95,11 +170,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/history': {
+      id: '/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof HistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jd-analyzer': {
+      id: '/jd-analyzer'
+      path: '/jd-analyzer'
+      fullPath: '/jd-analyzer'
+      preLoaderRoute: typeof JdAnalyzerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/resume-analyzer': {
+      id: '/resume-analyzer'
+      path: '/resume-analyzer'
+      fullPath: '/resume-analyzer'
+      preLoaderRoute: typeof ResumeAnalyzerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -121,8 +217,12 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AiInterviewRoute: AiInterviewRoute,
   DashboardRoute: DashboardRoute,
+  HistoryRoute: HistoryRoute,
+  JdAnalyzerRoute: JdAnalyzerRoute,
   LoginRoute: LoginRoute,
+  ResumeAnalyzerRoute: ResumeAnalyzerRoute,
   SettingsRoute: SettingsRoute,
   SignupRoute: SignupRoute,
 }
