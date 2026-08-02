@@ -49,14 +49,14 @@ function SignupPage() {
 
   const validate = () => {
     const next: Record<string, string> = {};
-    if (values.fullName.trim().length < 2) next.fullName = "Enter your full name";
+    if (values.fullName.trim().length < 2) next["fullName"] = "Enter your full name";
     if (!/^[a-zA-Z0-9_]{3,20}$/.test(values.username.trim()))
-      next.username = "3–20 characters, letters, numbers or underscore";
+      next["username"] = "3–20 characters, letters, numbers or underscore";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(values.email.trim()))
-      next.email = "Enter a valid email address";
-    if (values.password.length < 6) next.password = "Password must be at least 6 characters";
+      next["email"] = "Enter a valid email address";
+    if (values.password.length < 6) next["password"] = "Password must be at least 6 characters";
     if (values.confirmPassword !== values.password)
-      next.confirmPassword = "Passwords do not match";
+      next["confirmPassword"] = "Passwords do not match";
     return next;
   };
 
@@ -111,7 +111,7 @@ function SignupPage() {
           autoComplete="name"
           value={values.fullName}
           onChange={set("fullName")}
-          error={errors.fullName}
+          error={errors["fullName"]}
         />
         <Field
           label="Username"
@@ -120,7 +120,7 @@ function SignupPage() {
           autoComplete="username"
           value={values.username}
           onChange={set("username")}
-          error={errors.username}
+          error={errors["username"]}
         />
         <Field
           label="Email"
@@ -130,7 +130,7 @@ function SignupPage() {
           autoComplete="email"
           value={values.email}
           onChange={set("email")}
-          error={errors.email}
+          error={errors["email"]}
         />
         <div className="grid gap-4 sm:grid-cols-2">
           <Field
@@ -141,7 +141,7 @@ function SignupPage() {
             autoComplete="new-password"
             value={values.password}
             onChange={set("password")}
-            error={errors.password}
+            error={errors["password"]}
           />
           <Field
             label="Confirm password"
@@ -151,7 +151,7 @@ function SignupPage() {
             autoComplete="new-password"
             value={values.confirmPassword}
             onChange={set("confirmPassword")}
-            error={errors.confirmPassword}
+            error={errors["confirmPassword"]}
           />
         </div>
 

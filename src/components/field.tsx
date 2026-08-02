@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 type FieldProps = InputHTMLAttributes<HTMLInputElement> & {
   label: string;
-  error?: string;
+  error?: string | undefined;
 };
 
 export function Field({ label, error, className, id, type, ...props }: FieldProps) {

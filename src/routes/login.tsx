@@ -40,8 +40,8 @@ function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const next: Record<string, string> = {};
-    if (!values.username.trim()) next.username = "Username is required";
-    if (!values.password) next.password = "Password is required";
+    if (!values.username.trim()) next["username"] = "Username is required";
+    if (!values.password) next["password"] = "Password is required";
     setErrors(next);
     if (Object.keys(next).length) return;
 
@@ -86,7 +86,7 @@ function LoginPage() {
           autoComplete="username"
           value={values.username}
           onChange={set("username")}
-          error={errors.username}
+          error={errors["username"]}
         />
         <Field
           label="Password"
@@ -96,7 +96,7 @@ function LoginPage() {
           autoComplete="current-password"
           value={values.password}
           onChange={set("password")}
-          error={errors.password}
+          error={errors["password"]}
         />
 
         <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
