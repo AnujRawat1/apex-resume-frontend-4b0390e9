@@ -19,9 +19,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className="pointer-events-none absolute inset-x-0 top-0 h-96 bg-[image:var(--gradient-surface)]" />
       <Navbar />
       <main className="relative mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
-        <div key={typeof window === "undefined" ? "ssr" : undefined} className="animate-fade-up">
-          {children}
-        </div>
+        <div className="animate-fade-up">{children}</div>
       </main>
     </div>
   );
