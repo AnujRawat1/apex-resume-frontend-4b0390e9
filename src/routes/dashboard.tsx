@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Brain, Clock, FileSearch, MessageSquareText, ScrollText, TrendingUp } from "lucide-react";
+import { Brain, Clock, Compass, FileSearch, MessageSquareText, PenLine, TrendingUp } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { useAuth } from "@/lib/auth-provider";
 
@@ -23,22 +23,22 @@ const MODULES = [
     icon: FileSearch,
   },
   {
-    to: "/jd-analyzer" as const,
-    title: "JD Analyzer",
-    description: "Extract must-have skills from any job description.",
-    icon: ScrollText,
-  },
-  {
     to: "/ai-interview" as const,
     title: "AI Interview",
     description: "Practise role-specific questions with instant feedback.",
     icon: MessageSquareText,
   },
   {
-    to: "/history" as const,
-    title: "History",
-    description: "Revisit every analysis and interview session.",
-    icon: Clock,
+    to: "/career-mentor" as const,
+    title: "AI Career Mentor",
+    description: "Personalised roadmaps toward your target role.",
+    icon: Compass,
+  },
+  {
+    to: "/cover-letter" as const,
+    title: "Cover Letter Generator",
+    description: "Tailored cover letters for every application.",
+    icon: PenLine,
   },
 ];
 
