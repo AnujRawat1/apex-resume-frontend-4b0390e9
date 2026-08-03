@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Logo } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
-import authIllustration from "@/assets/auth-illustration.jpg";
+import authIllustration from "@/assets/auth-illustration.png";
 
 const HIGHLIGHTS = [
   "AI resume scoring against any job description",
@@ -54,7 +54,7 @@ export function AuthLayout({
               width={1024}
               height={1024}
               loading="lazy"
-              className="mx-auto w-full max-w-sm animate-float drop-shadow-xl mix-blend-multiply dark:mix-blend-screen dark:opacity-90"
+              className="mx-auto w-full max-w-sm animate-float drop-shadow-xl"
             />
           </div>
           <ul className="mt-4 space-y-3">

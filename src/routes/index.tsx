@@ -14,7 +14,7 @@ import {
 import { Logo } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useAuth } from "@/lib/auth-provider";
-import heroIllustration from "@/assets/auth-illustration.jpg";
+import heroIllustration from "@/assets/auth-illustration.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -220,7 +220,7 @@ function Landing() {
               alt="AI-scored resume with feedback charts and chat bubbles"
               width={1024}
               height={1024}
-              className="mx-auto w-full max-w-lg animate-float drop-shadow-2xl mix-blend-multiply dark:mix-blend-screen dark:opacity-90"
+              className="mx-auto w-full max-w-lg animate-float drop-shadow-2xl"
             />
           </div>
         </section>
