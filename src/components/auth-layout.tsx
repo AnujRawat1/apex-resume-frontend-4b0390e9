@@ -1,11 +1,13 @@
 import type { ReactNode } from "react";
 import { Logo } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { cn } from "@/lib/utils";
+import authIllustration from "@/assets/auth-illustration.png";
 
 const HIGHLIGHTS = [
   "AI resume scoring against any job description",
   "Mock interviews with instant, structured feedback",
-  "Track every application in one clean history",
+  "A career mentor and cover letters, always on call",
 ];
 
 export function AuthLayout({
@@ -13,11 +15,14 @@ export function AuthLayout({
   subtitle,
   children,
   footer,
+  side = "right",
 }: {
   title: string;
   subtitle: string;
   children: ReactNode;
   footer: ReactNode;
+  /** Which column the form card sits in on large screens. */
+  side?: "left" | "right";
 }) {
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden bg-background">
@@ -30,18 +35,29 @@ export function AuthLayout({
       </header>
 
       <div className="relative z-10 mx-auto grid w-full max-w-7xl flex-1 items-center gap-12 px-4 pb-12 pt-4 sm:px-6 lg:grid-cols-2 lg:px-8">
-        <section className="hidden animate-fade-up lg:block">
+        <section
+          className={cn(
+            "hidden lg:block",
+            side === "left" ? "lg:order-2 animate-slide-in-right" : "lg:order-1 animate-slide-in-left",
+          )}
+        >
           <p className="inline-flex items-center rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground shadow-soft">
-            Phase 1 · Apex Resume
+            ApexHire · AI hiring workspace
           </p>
           <h1 className="mt-6 text-5xl font-semibold leading-[1.05]">
             Land the interview with a <span className="text-gradient">sharper resume</span>.
           </h1>
-          <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground">
-            One workspace to analyze your resume, decode job descriptions, and rehearse interviews
-            with AI feedback.
-          </p>
-          <ul className="mt-8 space-y-3">
+          <div className="relative mt-8">
+            <img
+              src={authIllustration}
+              alt="Illustration of an AI-scored resume with charts and feedback bubbles"
+              width={1024}
+              height={1024}
+              loading="lazy"
+              className="mx-auto w-full max-w-sm animate-float drop-shadow-xl"
+            />
+          </div>
+          <ul className="mt-4 space-y-3">
             {HIGHLIGHTS.map((item) => (
               <li key={item} className="flex items-start gap-3 text-sm text-muted-foreground">
                 <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-gradient-primary" />
@@ -51,7 +67,13 @@ export function AuthLayout({
           </ul>
         </section>
 
-        <section className="mx-auto w-full max-w-md animate-fade-up">
+        <section
+          key={side}
+          className={cn(
+            "mx-auto w-full max-w-md",
+            side === "left" ? "lg:order-1 animate-slide-in-left" : "lg:order-2 animate-slide-in-right",
+          )}
+        >
           <div className="surface-card p-6 sm:p-8">
             <h2 className="text-2xl font-semibold">{title}</h2>
             <p className="mt-1.5 text-sm text-muted-foreground">{subtitle}</p>

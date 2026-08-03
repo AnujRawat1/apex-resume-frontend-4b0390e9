@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AiInterviewRouteImport } from './routes/ai-interview'
+import { Route as CareerMentorRouteImport } from './routes/career-mentor'
+import { Route as CoverLetterRouteImport } from './routes/cover-letter'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as JdAnalyzerRouteImport } from './routes/jd-analyzer'
@@ -27,6 +29,16 @@ const IndexRoute = IndexRouteImport.update({
 const AiInterviewRoute = AiInterviewRouteImport.update({
   id: '/ai-interview',
   path: '/ai-interview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CareerMentorRoute = CareerMentorRouteImport.update({
+  id: '/career-mentor',
+  path: '/career-mentor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoverLetterRoute = CoverLetterRouteImport.update({
+  id: '/cover-letter',
+  path: '/cover-letter',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -68,6 +80,8 @@ const SignupRoute = SignupRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ai-interview': typeof AiInterviewRoute
+  '/career-mentor': typeof CareerMentorRoute
+  '/cover-letter': typeof CoverLetterRoute
   '/dashboard': typeof DashboardRoute
   '/history': typeof HistoryRoute
   '/jd-analyzer': typeof JdAnalyzerRoute
@@ -79,6 +93,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ai-interview': typeof AiInterviewRoute
+  '/career-mentor': typeof CareerMentorRoute
+  '/cover-letter': typeof CoverLetterRoute
   '/dashboard': typeof DashboardRoute
   '/history': typeof HistoryRoute
   '/jd-analyzer': typeof JdAnalyzerRoute
@@ -91,6 +107,8 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/ai-interview': typeof AiInterviewRoute
+  '/career-mentor': typeof CareerMentorRoute
+  '/cover-letter': typeof CoverLetterRoute
   '/dashboard': typeof DashboardRoute
   '/history': typeof HistoryRoute
   '/jd-analyzer': typeof JdAnalyzerRoute
@@ -104,6 +122,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/ai-interview'
+    | '/career-mentor'
+    | '/cover-letter'
     | '/dashboard'
     | '/history'
     | '/jd-analyzer'
@@ -115,6 +135,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/ai-interview'
+    | '/career-mentor'
+    | '/cover-letter'
     | '/dashboard'
     | '/history'
     | '/jd-analyzer'
@@ -126,6 +148,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/ai-interview'
+    | '/career-mentor'
+    | '/cover-letter'
     | '/dashboard'
     | '/history'
     | '/jd-analyzer'
@@ -138,6 +162,8 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AiInterviewRoute: typeof AiInterviewRoute
+  CareerMentorRoute: typeof CareerMentorRoute
+  CoverLetterRoute: typeof CoverLetterRoute
   DashboardRoute: typeof DashboardRoute
   HistoryRoute: typeof HistoryRoute
   JdAnalyzerRoute: typeof JdAnalyzerRoute
@@ -161,6 +187,20 @@ declare module '@tanstack/react-router' {
       path: '/ai-interview'
       fullPath: '/ai-interview'
       preLoaderRoute: typeof AiInterviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/career-mentor': {
+      id: '/career-mentor'
+      path: '/career-mentor'
+      fullPath: '/career-mentor'
+      preLoaderRoute: typeof CareerMentorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cover-letter': {
+      id: '/cover-letter'
+      path: '/cover-letter'
+      fullPath: '/cover-letter'
+      preLoaderRoute: typeof CoverLetterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -218,6 +258,8 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AiInterviewRoute: AiInterviewRoute,
+  CareerMentorRoute: CareerMentorRoute,
+  CoverLetterRoute: CoverLetterRoute,
   DashboardRoute: DashboardRoute,
   HistoryRoute: HistoryRoute,
   JdAnalyzerRoute: JdAnalyzerRoute,

@@ -9,10 +9,10 @@ import { useAuth } from "@/lib/auth-provider";
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Log in — Apex Resume" },
-      { name: "description", content: "Sign in to your Apex Resume workspace." },
-      { property: "og:title", content: "Log in — Apex Resume" },
-      { property: "og:description", content: "Sign in to your Apex Resume workspace." },
+      { title: "Log in — ApexHire" },
+      { name: "description", content: "Sign in to your ApexHire workspace." },
+      { property: "og:title", content: "Log in — ApexHire" },
+      { property: "og:description", content: "Sign in to your ApexHire workspace." },
     ],
   }),
   component: LoginPage,
@@ -61,6 +61,7 @@ function LoginPage() {
 
   return (
     <AuthLayout
+      side="left"
       title="Welcome back"
       subtitle="Log in to continue building your Apex profile."
       footer={
@@ -80,7 +81,7 @@ function LoginPage() {
         )}
 
         <Field
-          label="Username"
+          label="Username or email"
           name="username"
           placeholder="user"
           autoComplete="username"
