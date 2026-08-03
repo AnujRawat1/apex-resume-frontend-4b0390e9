@@ -18,9 +18,9 @@ import { toast } from "sonner";
 const NAV_LINKS = [
   { to: "/dashboard", label: "Dashboard" },
   { to: "/resume-analyzer", label: "Resume Analyzer" },
-  { to: "/jd-analyzer", label: "JD Analyzer" },
   { to: "/ai-interview", label: "AI Interview" },
-  { to: "/history", label: "History" },
+  { to: "/career-mentor", label: "AI Career Mentor" },
+  { to: "/cover-letter", label: "Cover Letter Generator" },
 ] as const;
 
 export function Navbar() {
@@ -45,7 +45,7 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-        <Logo to="/dashboard" />
+        <Logo to="/" />
 
         <nav className="hidden items-center gap-1 lg:flex">
           {NAV_LINKS.map((link) => {
