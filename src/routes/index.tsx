@@ -1,7 +1,20 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Clock, FileSearch, MessageSquareText, ScrollText } from "lucide-react";
+import {
+  ArrowRight,
+  Compass,
+  FileSearch,
+  LayoutDashboard,
+  MessageSquareText,
+  PenLine,
+  ShieldCheck,
+  Sparkles,
+  Target,
+  Upload,
+} from "lucide-react";
 import { Logo } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { useAuth } from "@/lib/auth-provider";
+import heroIllustration from "@/assets/auth-illustration.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -10,12 +23,12 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Analyze your resume, decode job descriptions and rehearse AI interviews in one premium workspace.",
+          "Analyze your resume, rehearse AI interviews, get career mentoring and generate cover letters in one premium workspace.",
       },
       { property: "og:title", content: "ApexHire — Get interview-ready with AI" },
       {
         property: "og:description",
-        content: "Analyze resumes, decode job descriptions and rehearse AI interviews.",
+        content: "Analyze resumes, rehearse AI interviews and generate cover letters.",
       },
     ],
   }),
@@ -29,23 +42,86 @@ const FEATURES = [
     icon: FileSearch,
   },
   {
-    title: "JD Analyzer",
-    description: "Turn any job description into a checklist of skills you need to show.",
-    icon: ScrollText,
-  },
-  {
     title: "AI Interview",
     description: "Role-specific mock interviews with instant, structured feedback.",
     icon: MessageSquareText,
   },
   {
-    title: "History",
-    description: "Every analysis and session, saved and searchable in one timeline.",
-    icon: Clock,
+    title: "AI Career Mentor",
+    description: "Personalised roadmaps that close the gap to your target role.",
+    icon: Compass,
+  },
+  {
+    title: "Cover Letter Generator",
+    description: "Tailored, recruiter-ready cover letters for every application.",
+    icon: PenLine,
+  },
+];
+
+const STEPS = [
+  {
+    title: "Upload your resume",
+    description: "Drop in a PDF and paste the job description you're targeting.",
+    icon: Upload,
+  },
+  {
+    title: "Get your score",
+    description: "See exactly which keywords, metrics and sections are holding you back.",
+    icon: Target,
+  },
+  {
+    title: "Rehearse and apply",
+    description: "Practise the interview, generate the cover letter, then hit send.",
+    icon: Sparkles,
+  },
+];
+
+const STATS = [
+  { value: "6x", label: "Faster tailoring per application" },
+  { value: "40+", label: "Signals checked on every resume" },
+  { value: "24/7", label: "AI mentor and interviewer" },
+];
+
+const TESTIMONIALS = [
+  {
+    quote:
+      "I finally understood why my resume was getting filtered out. Two rewrites later I had three interviews.",
+    name: "Priya S.",
+    role: "Frontend Engineer",
+  },
+  {
+    quote:
+      "The mock interviews are brutally honest in the best way. Walked into the real one already warmed up.",
+    name: "Daniel K.",
+    role: "Data Analyst",
+  },
+  {
+    quote:
+      "Cover letters used to take me an hour each. Now it's a minute and they actually sound like me.",
+    name: "Meera R.",
+    role: "Product Designer",
+  },
+];
+
+const FAQS = [
+  {
+    q: "Is ApexHire free to start?",
+    a: "Yes. Create an account and run your first resume analysis and mock interview at no cost.",
+  },
+  {
+    q: "Does it work for any role?",
+    a: "Paste any job description and ApexHire adapts its scoring, questions and cover letter to that role.",
+  },
+  {
+    q: "What happens to my resume?",
+    a: "Your documents stay tied to your account and are only used to generate your own feedback.",
   },
 ];
 
 function Landing() {
+  const { user, ready } = useAuth();
+  const signedIn = ready && !!user;
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-background">
       <div className="aurora left-[-12%] top-[-12%] size-[460px] bg-primary animate-float" />
@@ -56,63 +132,202 @@ function Landing() {
           <Logo />
           <div className="flex items-center gap-2">
             <ThemeToggle />
-            <Link
-              to="/login"
-              className="inline-flex h-10 items-center rounded-xl border border-border bg-card px-4 text-sm font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-soft"
-            >
-              Log in
-            </Link>
-            <Link
-              to="/signup"
-              className="hidden h-10 items-center rounded-xl bg-gradient-primary px-4 text-sm font-semibold text-primary-foreground shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-elevated sm:inline-flex"
-            >
-              Get started
-            </Link>
+            {signedIn ? (
+              <Link
+                to="/dashboard"
+                className="inline-flex h-10 items-center gap-2 rounded-xl bg-gradient-primary px-4 text-sm font-semibold text-primary-foreground shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-elevated"
+              >
+                <LayoutDashboard className="size-4" />
+                Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="inline-flex h-10 items-center rounded-xl border border-border bg-card px-4 text-sm font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-soft"
+                >
+                  Log in
+                </Link>
+                <Link
+                  to="/signup"
+                  className="hidden h-10 items-center rounded-xl bg-gradient-primary px-4 text-sm font-semibold text-primary-foreground shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-elevated sm:inline-flex"
+                >
+                  Get started
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>
 
       <main className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-        <section className="animate-fade-up py-20 text-center sm:py-28">
-          <p className="inline-flex items-center rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-medium text-muted-foreground shadow-soft">
-            Phase 1 · Authentication & workspace
-          </p>
-          <h1 className="mx-auto mt-7 max-w-3xl text-4xl font-semibold leading-[1.08] sm:text-6xl">
-            Your resume, <span className="text-gradient">sharpened by AI</span>.
-          </h1>
-          <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-            ApexHire scores your resume against real job descriptions and rehearses the interview
-            with you — all in one calm, focused workspace.
-          </p>
-          <div className="mt-9 flex flex-wrap justify-center gap-3">
-            <Link
-              to="/signup"
-              className="group inline-flex h-12 items-center gap-2 rounded-xl bg-gradient-primary px-6 text-sm font-semibold text-primary-foreground shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-elevated active:translate-y-0"
-            >
-              Create free account
-              <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
-            </Link>
-            <Link
-              to="/login"
-              className="inline-flex h-12 items-center rounded-xl border border-border bg-card px-6 text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-soft active:translate-y-0"
-            >
-              Log in
-            </Link>
+        <section className="grid animate-fade-up items-center gap-12 py-16 sm:py-24 lg:grid-cols-2">
+          <div className="text-center lg:text-left">
+            <p className="inline-flex items-center rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-medium text-muted-foreground shadow-soft">
+              AI resume · interview · career workspace
+            </p>
+            <h1 className="mt-7 text-4xl font-semibold leading-[1.08] sm:text-6xl">
+              Your resume, <span className="text-gradient">sharpened by AI</span>.
+            </h1>
+            <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg lg:mx-0">
+              ApexHire scores your resume against real job descriptions, rehearses the interview
+              with you and writes the cover letter — all in one calm, focused workspace.
+            </p>
+            <div className="mt-9 flex flex-wrap justify-center gap-3 lg:justify-start">
+              {signedIn ? (
+                <>
+                  <Link
+                    to="/dashboard"
+                    className="group inline-flex h-12 items-center gap-2 rounded-xl bg-gradient-primary px-6 text-sm font-semibold text-primary-foreground shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-elevated active:translate-y-0"
+                  >
+                    Go to dashboard
+                    <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
+                  </Link>
+                  <Link
+                    to="/resume-analyzer"
+                    className="inline-flex h-12 items-center rounded-xl border border-border bg-card px-6 text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-soft active:translate-y-0"
+                  >
+                    Analyze my resume
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/signup"
+                    className="group inline-flex h-12 items-center gap-2 rounded-xl bg-gradient-primary px-6 text-sm font-semibold text-primary-foreground shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-elevated active:translate-y-0"
+                  >
+                    Create free account
+                    <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
+                  </Link>
+                  <Link
+                    to="/login"
+                    className="inline-flex h-12 items-center rounded-xl border border-border bg-card px-6 text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-soft active:translate-y-0"
+                  >
+                    Log in
+                  </Link>
+                </>
+              )}
+            </div>
+            <p className="mt-5 inline-flex items-center gap-2 text-xs text-muted-foreground">
+              <ShieldCheck className="size-4 text-primary" />
+              No credit card required · your documents stay private
+            </p>
+          </div>
+
+          <div className="relative hidden lg:block">
+            <img
+              src={heroIllustration}
+              alt="AI-scored resume with feedback charts and chat bubbles"
+              width={1024}
+              height={1024}
+              className="mx-auto w-full max-w-lg animate-float drop-shadow-2xl mix-blend-multiply dark:mix-blend-screen dark:opacity-90"
+            />
           </div>
         </section>
 
-        <section className="grid gap-4 pb-24 sm:grid-cols-2 xl:grid-cols-4">
-          {FEATURES.map((feature) => (
-            <article key={feature.title} className="surface-card hover-lift group p-6">
-              <span className="grid size-11 place-items-center rounded-xl bg-secondary text-primary transition-colors duration-300 group-hover:bg-gradient-primary group-hover:text-primary-foreground">
-                <feature.icon className="size-5" />
-              </span>
-              <h2 className="mt-4 text-base font-semibold">{feature.title}</h2>
-              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                {feature.description}
-              </p>
-            </article>
+        <section className="grid gap-4 pb-6 sm:grid-cols-3">
+          {STATS.map((stat) => (
+            <div key={stat.label} className="surface-card hover-lift p-6 text-center">
+              <p className="font-display text-4xl font-semibold text-gradient">{stat.value}</p>
+              <p className="mt-2 text-sm text-muted-foreground">{stat.label}</p>
+            </div>
           ))}
+        </section>
+
+        <section className="py-16">
+          <div className="text-center">
+            <h2 className="text-2xl font-semibold sm:text-3xl">Everything you need to get hired</h2>
+            <p className="mx-auto mt-3 max-w-lg text-sm text-muted-foreground sm:text-base">
+              Four connected modules that take you from a rough draft to an offer conversation.
+            </p>
+          </div>
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {FEATURES.map((feature) => (
+              <article key={feature.title} className="surface-card hover-lift group p-6">
+                <span className="grid size-11 place-items-center rounded-xl bg-secondary text-primary transition-colors duration-300 group-hover:bg-gradient-primary group-hover:text-primary-foreground">
+                  <feature.icon className="size-5" />
+                </span>
+                <h3 className="mt-4 text-base font-semibold">{feature.title}</h3>
+                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                  {feature.description}
+                </p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="py-10">
+          <h2 className="text-center text-2xl font-semibold sm:text-3xl">How it works</h2>
+          <div className="mt-10 grid gap-4 sm:grid-cols-3">
+            {STEPS.map((step, i) => (
+              <div key={step.title} className="surface-card hover-lift relative p-6">
+                <span className="absolute right-5 top-5 font-display text-4xl font-semibold text-secondary">
+                  {i + 1}
+                </span>
+                <span className="grid size-11 place-items-center rounded-xl bg-gradient-primary text-primary-foreground shadow-soft">
+                  <step.icon className="size-5" />
+                </span>
+                <h3 className="mt-4 text-base font-semibold">{step.title}</h3>
+                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                  {step.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="py-16">
+          <h2 className="text-center text-2xl font-semibold sm:text-3xl">Loved by job seekers</h2>
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {TESTIMONIALS.map((t) => (
+              <figure key={t.name} className="surface-card hover-lift p-6">
+                <blockquote className="text-sm leading-relaxed text-muted-foreground">
+                  “{t.quote}”
+                </blockquote>
+                <figcaption className="mt-5 flex items-center gap-3">
+                  <span className="grid size-9 place-items-center rounded-full bg-gradient-primary text-xs font-semibold text-primary-foreground">
+                    {t.name.charAt(0)}
+                  </span>
+                  <span>
+                    <span className="block text-sm font-semibold">{t.name}</span>
+                    <span className="block text-xs text-muted-foreground">{t.role}</span>
+                  </span>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </section>
+
+        <section className="pb-16">
+          <h2 className="text-center text-2xl font-semibold sm:text-3xl">Frequently asked</h2>
+          <div className="mx-auto mt-8 max-w-2xl space-y-3">
+            {FAQS.map((faq) => (
+              <details key={faq.q} className="surface-card group p-5">
+                <summary className="cursor-pointer list-none text-sm font-semibold marker:hidden">
+                  {faq.q}
+                </summary>
+                <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">{faq.a}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section className="surface-card mb-20 overflow-hidden p-8 text-center sm:p-12">
+          <h2 className="text-2xl font-semibold sm:text-3xl">
+            Ready to make your next application count?
+          </h2>
+          <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground sm:text-base">
+            Set up your workspace in under a minute and run your first analysis today.
+          </p>
+          <div className="mt-7 flex justify-center">
+            <Link
+              to={signedIn ? "/dashboard" : "/signup"}
+              className="group inline-flex h-12 items-center gap-2 rounded-xl bg-gradient-primary px-6 text-sm font-semibold text-primary-foreground shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-elevated"
+            >
+              {signedIn ? "Open my workspace" : "Get started free"}
+              <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
+          </div>
         </section>
       </main>
 
