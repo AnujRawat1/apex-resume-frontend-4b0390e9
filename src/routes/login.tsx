@@ -61,6 +61,7 @@ function LoginPage() {
 
   return (
     <AuthLayout
+      side="left"
       title="Welcome back"
       subtitle="Log in to continue building your Apex profile."
       footer={
@@ -80,7 +81,7 @@ function LoginPage() {
         )}
 
         <Field
-          label="Username"
+          label="Username or email"
           name="username"
           placeholder="user"
           autoComplete="username"

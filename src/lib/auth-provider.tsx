@@ -61,7 +61,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await wait(700);
     const accounts = [DEMO_USER, ...readAccounts()];
     const match = accounts.find(
-      (a) => a.username.toLowerCase() === username.trim().toLowerCase() && a.password === password,
+      (a) =>
+        (a.username.toLowerCase() === username.trim().toLowerCase() ||
+          a.email.toLowerCase() === username.trim().toLowerCase()) &&
+        a.password === password,
     );
     if (!match) return { ok: false, error: "Invalid Username or Password" };
     persist({ fullName: match.fullName, username: match.username, email: match.email });
