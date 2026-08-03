@@ -6,10 +6,10 @@ import { useAuth } from "@/lib/auth-provider";
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
     meta: [
-      { title: "Dashboard — Apex Resume" },
-      { name: "description", content: "Your Apex Resume workspace overview and quick actions." },
-      { property: "og:title", content: "Dashboard — Apex Resume" },
-      { property: "og:description", content: "Your Apex Resume workspace overview." },
+      { title: "Dashboard — ApexHire" },
+      { name: "description", content: "Your ApexHire workspace overview and quick actions." },
+      { property: "og:title", content: "Dashboard — ApexHire" },
+      { property: "og:description", content: "Your ApexHire workspace overview." },
     ],
   }),
   component: DashboardPage,

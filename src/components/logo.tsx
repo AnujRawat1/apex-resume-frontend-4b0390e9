@@ -14,7 +14,7 @@ export function Logo({
     <Link
       to={to}
       className={cn("group inline-flex items-center gap-2.5", className)}
-      aria-label="Apex Resume home"
+      aria-label="ApexHire home"
     >
       <span className="relative grid size-9 place-items-center rounded-xl bg-gradient-primary text-primary-foreground shadow-soft transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:rotate-3">
         <svg viewBox="0 0 24 24" className="size-5" fill="none" aria-hidden="true">

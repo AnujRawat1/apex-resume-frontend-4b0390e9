@@ -5,9 +5,9 @@ import { ModulePlaceholder } from "@/components/module-placeholder";
 export const Route = createFileRoute("/jd-analyzer")({
   head: () => ({
     meta: [
-      { title: "JD Analyzer — Apex Resume" },
+      { title: "JD Analyzer — ApexHire" },
       { name: "description", content: "Extract must-have skills and keywords from a job description." },
-      { property: "og:title", content: "JD Analyzer — Apex Resume" },
+      { property: "og:title", content: "JD Analyzer — ApexHire" },
       { property: "og:description", content: "Extract must-have skills from any job description." },
     ],
   }),

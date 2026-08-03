@@ -80,13 +80,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Apex Resume — AI Resume & Interview Workspace" },
+      { title: "ApexHire — AI Resume & Interview Workspace" },
       {
         name: "description",
         content:
-          "Apex Resume helps you analyze resumes, decode job descriptions, and rehearse AI interviews in one clean workspace.",
+          "ApexHire helps you analyze resumes, decode job descriptions, and rehearse AI interviews in one clean workspace.",
       },
-      { property: "og:title", content: "Apex Resume — AI Resume & Interview Workspace" },
+      { property: "og:title", content: "ApexHire — AI Resume & Interview Workspace" },
       {
         property: "og:description",
         content: "Analyze resumes, decode job descriptions, and rehearse AI interviews.",

@@ -5,9 +5,9 @@ import { ModulePlaceholder } from "@/components/module-placeholder";
 export const Route = createFileRoute("/history")({
   head: () => ({
     meta: [
-      { title: "History — Apex Resume" },
+      { title: "History — ApexHire" },
       { name: "description", content: "Revisit every resume analysis and interview session." },
-      { property: "og:title", content: "History — Apex Resume" },
+      { property: "og:title", content: "History — ApexHire" },
       { property: "og:description", content: "Revisit every analysis and interview session." },
     ],
   }),

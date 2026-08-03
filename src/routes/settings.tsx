@@ -9,9 +9,9 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/settings")({
   head: () => ({
     meta: [
-      { title: "Settings — Apex Resume" },
-      { name: "description", content: "Manage your Apex Resume profile, theme and session." },
-      { property: "og:title", content: "Settings — Apex Resume" },
+      { title: "Settings — ApexHire" },
+      { name: "description", content: "Manage your ApexHire profile, theme and session." },
+      { property: "og:title", content: "Settings — ApexHire" },
       { property: "og:description", content: "Manage your profile, theme and session." },
     ],
   }),
@@ -103,7 +103,7 @@ function SettingsContent() {
       <section className="surface-card p-6">
         <h2 className="text-base font-semibold">Session</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Log out of Apex Resume on this device.
+          Log out of ApexHire on this device.
         </p>
         <button
           type="button"

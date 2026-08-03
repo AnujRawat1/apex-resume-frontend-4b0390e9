@@ -32,7 +32,7 @@ export function AuthLayout({
       <div className="relative z-10 mx-auto grid w-full max-w-7xl flex-1 items-center gap-12 px-4 pb-12 pt-4 sm:px-6 lg:grid-cols-2 lg:px-8">
         <section className="hidden animate-fade-up lg:block">
           <p className="inline-flex items-center rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground shadow-soft">
-            Phase 1 · Apex Resume
+            Phase 1 · ApexHire
           </p>
           <h1 className="mt-6 text-5xl font-semibold leading-[1.05]">
             Land the interview with a <span className="text-gradient">sharper resume</span>.

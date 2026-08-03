@@ -6,13 +6,13 @@ import { ThemeToggle } from "@/components/theme-toggle";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Apex Resume — Get interview-ready with AI" },
+      { title: "ApexHire — Get interview-ready with AI" },
       {
         name: "description",
         content:
           "Analyze your resume, decode job descriptions and rehearse AI interviews in one premium workspace.",
       },
-      { property: "og:title", content: "Apex Resume — Get interview-ready with AI" },
+      { property: "og:title", content: "ApexHire — Get interview-ready with AI" },
       {
         property: "og:description",
         content: "Analyze resumes, decode job descriptions and rehearse AI interviews.",
@@ -81,7 +81,7 @@ function Landing() {
             Your resume, <span className="text-gradient">sharpened by AI</span>.
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Apex Resume scores your resume against real job descriptions and rehearses the interview
+            ApexHire scores your resume against real job descriptions and rehearses the interview
             with you — all in one calm, focused workspace.
           </p>
           <div className="mt-9 flex flex-wrap justify-center gap-3">
@@ -119,7 +119,7 @@ function Landing() {
       <footer className="border-t border-border/60 py-8">
         <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-3 px-4 text-sm text-muted-foreground sm:flex-row sm:justify-between sm:px-6 lg:px-8">
           <Logo />
-          <p>© {new Date().getFullYear()} Apex Resume</p>
+          <p>© {new Date().getFullYear()} ApexHire</p>
         </div>
       </footer>
     </div>

@@ -9,12 +9,12 @@ import { useAuth } from "@/lib/auth-provider";
 export const Route = createFileRoute("/signup")({
   head: () => ({
     meta: [
-      { title: "Create your account — Apex Resume" },
-      { name: "description", content: "Sign up for Apex Resume and start analyzing your resume." },
-      { property: "og:title", content: "Create your account — Apex Resume" },
+      { title: "Create your account — ApexHire" },
+      { name: "description", content: "Sign up for ApexHire and start analyzing your resume." },
+      { property: "og:title", content: "Create your account — ApexHire" },
       {
         property: "og:description",
-        content: "Sign up for Apex Resume and start analyzing your resume.",
+        content: "Sign up for ApexHire and start analyzing your resume.",
       },
     ],
   }),
@@ -80,14 +80,14 @@ function SignupPage() {
       toast.error(res.error ?? "Sign up failed");
       return;
     }
-    toast.success("Account created", { description: "Welcome to Apex Resume." });
+    toast.success("Account created", { description: "Welcome to ApexHire." });
     navigate({ to: "/dashboard" });
   };
 
   return (
     <AuthLayout
       title="Create your account"
-      subtitle="Join Apex Resume and get interview-ready faster."
+      subtitle="Join ApexHire and get interview-ready faster."
       footer={
         <>
           Already have an account?{" "}

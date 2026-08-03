@@ -5,9 +5,9 @@ import { ModulePlaceholder } from "@/components/module-placeholder";
 export const Route = createFileRoute("/ai-interview")({
   head: () => ({
     meta: [
-      { title: "AI Interview — Apex Resume" },
+      { title: "AI Interview — ApexHire" },
       { name: "description", content: "Practise role-specific interview questions with AI feedback." },
-      { property: "og:title", content: "AI Interview — Apex Resume" },
+      { property: "og:title", content: "AI Interview — ApexHire" },
       { property: "og:description", content: "Practise interview questions with instant AI feedback." },
     ],
   }),
