@@ -25,9 +25,9 @@ export function AuthLayout({
   side?: "left" | "right";
 }) {
   return (
-    <div className="relative flex min-h-screen flex-col overflow-hidden bg-background">
-      <div className="aurora left-[-10%] top-[-10%] size-[420px] bg-primary" />
-      <div className="aurora right-[-8%] top-[30%] size-[380px] bg-primary-glow" />
+    <div className="relative flex min-h-dvh flex-col overflow-hidden bg-background">
+      <div className="aurora left-[-10%] top-[-10%] size-[460px] bg-primary" />
+      <div className="aurora right-[-8%] top-[30%] size-[420px] bg-primary-glow" />
 
       <header className="relative z-10 mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-5 sm:px-6 lg:px-8">
         <Logo />
@@ -74,7 +74,7 @@ export function AuthLayout({
             side === "left" ? "lg:order-1 animate-slide-in-left" : "lg:order-2 animate-slide-in-right",
           )}
         >
-          <div className="surface-card p-6 sm:p-8">
+          <div className="glass-panel p-6 sm:p-8 shadow-elevated">
             <h2 className="text-2xl font-semibold">{title}</h2>
             <p className="mt-1.5 text-sm text-muted-foreground">{subtitle}</p>
             <div className="mt-7">{children}</div>

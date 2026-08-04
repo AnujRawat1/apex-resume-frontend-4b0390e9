@@ -1,10 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { ArrowLeft, MailCheck } from "lucide-react";
+import { ArrowLeft, Lock, Mail, MailCheck, User } from "lucide-react";
 import { AuthLayout } from "@/components/auth-layout";
-import { Field } from "@/components/field";
-import { Spinner } from "@/components/spinner";
+import { AuthInput } from "@/components/auth/auth-input";
+import { AuthButton } from "@/components/auth/auth-button";
+import { OAuthButtons } from "@/components/auth/oauth-buttons";
+import { OtpInput } from "@/components/auth/otp-input";
+import { PasswordChecklist, isStrongPassword } from "@/components/auth/password-checklist";
 import { useAuth } from "@/lib/auth-provider";
 
 export const Route = createFileRoute("/signup")({
@@ -22,15 +25,11 @@ export const Route = createFileRoute("/signup")({
   component: SignupPage,
 });
 
-const initial = {
-  fullName: "",
-  email: "",
-  password: "",
-  confirmPassword: "",
-};
+const initial = { fullName: "", email: "", password: "", confirmPassword: "" };
 
-// Temporary until the email service is wired up.
+// Temporary until the email service is wired up. Alphanumeric, case-insensitive.
 const DEMO_CODE = "123456";
+const RESEND_SECONDS = 25;
 
 function SignupPage() {
   const { signup, user, ready } = useAuth();
@@ -40,17 +39,19 @@ function SignupPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [code, setCode] = useState(["", "", "", "", "", ""]);
+  const [code, setCode] = useState<string[]>(Array(6).fill(""));
   const [codeError, setCodeError] = useState("");
-  const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
+  const [seconds, setSeconds] = useState(RESEND_SECONDS);
 
   useEffect(() => {
     if (ready && user) navigate({ to: "/dashboard", replace: true });
   }, [ready, user, navigate]);
 
   useEffect(() => {
-    if (step === "verify") inputsRef.current[0]?.focus();
-  }, [step]);
+    if (step !== "verify" || seconds <= 0) return;
+    const id = window.setInterval(() => setSeconds((s) => (s > 0 ? s - 1 : 0)), 1000);
+    return () => window.clearInterval(id);
+  }, [step, seconds]);
 
   const set = (key: keyof typeof initial) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setValues((v) => ({ ...v, [key]: e.target.value }));
@@ -63,14 +64,17 @@ function SignupPage() {
     if (values.fullName.trim().length < 2) next["fullName"] = "Enter your full name";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(values.email.trim()))
       next["email"] = "Enter a valid email address";
-    if (values.password.length < 6) next["password"] = "Password must be at least 6 characters";
-    if (values.confirmPassword !== values.password)
+    if (!isStrongPassword(values.password))
+      next["password"] = "Password does not meet all requirements";
+    if (!values.confirmPassword) next["confirmPassword"] = "Confirm your password";
+    else if (values.confirmPassword !== values.password)
       next["confirmPassword"] = "Passwords do not match";
     return next;
   };
 
   const handleSendCode = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return;
     const next = validate();
     setErrors(next);
     if (Object.keys(next).length) return;
@@ -78,71 +82,49 @@ function SignupPage() {
     setLoading(true);
     await new Promise((r) => setTimeout(r, 700));
     setLoading(false);
-    setCode(["", "", "", "", "", ""]);
+    setCode(Array(6).fill(""));
     setCodeError("");
+    setSeconds(RESEND_SECONDS);
     setStep("verify");
-    toast.success("Verification code sent", {
-      description: `We sent a 6-digit code to ${values.email.trim()}.`,
-    });
+    toast.success("Verification code sent", { duration: 2200 });
   };
 
-  const setDigit = (index: number, raw: string) => {
-    const digits = raw.replace(/\D/g, "");
-    setCodeError("");
-    if (!digits) {
-      setCode((prev) => prev.map((d, i) => (i === index ? "" : d)));
-      return;
-    }
-    setCode((prev) => {
-      const next = [...prev];
-      for (let i = 0; i < digits.length && index + i < 6; i++) next[index + i] = digits[i]!;
-      return next;
-    });
-    const focusIndex = Math.min(index + digits.length, 5);
-    inputsRef.current[focusIndex]?.focus();
-  };
+  const handleVerify = useCallback(
+    async (entered: string) => {
+      if (loading) return;
+      setLoading(true);
+      await new Promise((r) => setTimeout(r, 600));
 
-  const handleKeyDown = (index: number) => (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Backspace" && !code[index] && index > 0) {
-      inputsRef.current[index - 1]?.focus();
-    }
-  };
+      if (entered.toUpperCase() !== DEMO_CODE) {
+        setLoading(false);
+        setCodeError("That verification code is invalid.");
+        setCode(Array(6).fill(""));
+        toast.error("Invalid verification code", { duration: 2200 });
+        return;
+      }
 
-  const handleVerify = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const entered = code.join("");
-    if (entered.length !== 6) {
-      setCodeError("Enter the full 6-digit code");
-      return;
-    }
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 600));
-
-    if (entered !== DEMO_CODE) {
+      const username = values.email.trim().split("@")[0]!.replace(/[^a-zA-Z0-9_]/g, "");
+      const res = await signup({
+        fullName: values.fullName.trim(),
+        username,
+        email: values.email.trim(),
+        password: values.password,
+      });
       setLoading(false);
-      setCodeError("That code is incorrect. Please try again.");
-      toast.error("Invalid verification code");
-      return;
-    }
 
-    const username = values.email.trim().split("@")[0]!.replace(/[^a-zA-Z0-9_]/g, "");
-    const res = await signup({
-      fullName: values.fullName.trim(),
-      username,
-      email: values.email.trim(),
-      password: values.password,
-    });
-    setLoading(false);
+      if (!res.ok) {
+        setFormError(res.error ?? "Something went wrong");
+        toast.error(res.error ?? "Sign up failed", { duration: 2400 });
+        setStep("details");
+        return;
+      }
+      toast.success("Account created", { duration: 1800 });
+      navigate({ to: "/dashboard" });
+    },
+    [loading, navigate, signup, values],
+  );
 
-    if (!res.ok) {
-      setFormError(res.error ?? "Something went wrong");
-      toast.error(res.error ?? "Sign up failed");
-      setStep("details");
-      return;
-    }
-    toast.success("Email verified — account created", { description: "Welcome to ApexHire." });
-    navigate({ to: "/dashboard" });
-  };
+  const mmss = `00:${String(seconds).padStart(2, "0")}`;
 
   return (
     <AuthLayout
@@ -151,7 +133,7 @@ function SignupPage() {
       subtitle={
         step === "details"
           ? "Join ApexHire and get interview-ready faster."
-          : `Enter the 6-digit code we sent to ${values.email.trim()}.`
+          : `Enter the 6-character code we sent to ${values.email.trim()}.`
       }
       footer={
         <>
@@ -165,126 +147,133 @@ function SignupPage() {
       {step === "details" ? (
         <form onSubmit={handleSendCode} className="animate-fade-up space-y-4" noValidate>
           {formError && (
-            <div className="animate-fade-up rounded-xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm font-medium text-destructive">
+            <div
+              role="alert"
+              className="animate-fade-up rounded-2xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm font-medium text-destructive"
+            >
               {formError}
             </div>
           )}
 
-          <Field
+          <AuthInput
             label="Full name"
             name="fullName"
+            icon={<User />}
             placeholder="Ada Lovelace"
             autoComplete="name"
+            disabled={loading}
             value={values.fullName}
             onChange={set("fullName")}
             error={errors["fullName"]}
           />
-          <Field
+          <AuthInput
             label="Email"
             name="email"
             type="email"
+            icon={<Mail />}
             placeholder="you@gmail.com"
             autoComplete="email"
+            disabled={loading}
             value={values.email}
             onChange={set("email")}
             error={errors["email"]}
           />
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field
+          <div className="space-y-2">
+            <AuthInput
               label="Password"
               name="password"
               type="password"
+              icon={<Lock />}
               placeholder="••••••••"
               autoComplete="new-password"
+              disabled={loading}
               value={values.password}
               onChange={set("password")}
               error={errors["password"]}
             />
-            <Field
-              label="Confirm password"
-              name="confirmPassword"
-              type="password"
-              placeholder="••••••••"
-              autoComplete="new-password"
-              value={values.confirmPassword}
-              onChange={set("confirmPassword")}
-              error={errors["confirmPassword"]}
-            />
+            <PasswordChecklist value={values.password} />
           </div>
-
-          <button
-            type="submit"
+          <AuthInput
+            label="Confirm password"
+            name="confirmPassword"
+            type="password"
+            icon={<Lock />}
+            placeholder="••••••••"
+            autoComplete="new-password"
             disabled={loading}
-            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-primary text-[15px] font-semibold text-primary-foreground shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-elevated active:translate-y-0 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-70"
-          >
-            {loading && <Spinner />}
-            {loading ? "Sending code…" : "Send verification code"}
-          </button>
+            value={values.confirmPassword}
+            onChange={set("confirmPassword")}
+            error={errors["confirmPassword"]}
+          />
+
+          <AuthButton type="submit" loading={loading} loadingText="Sending code…">
+            Create account
+          </AuthButton>
+
+          <OAuthButtons disabled={loading} />
         </form>
       ) : (
-        <form onSubmit={handleVerify} className="animate-fade-up space-y-5" noValidate>
-          <div className="flex items-center gap-3 rounded-xl bg-secondary px-4 py-3 text-sm text-muted-foreground">
+        <div className="animate-fade-up space-y-5">
+          <div className="flex items-center gap-3 rounded-2xl bg-secondary/60 px-4 py-3 text-sm text-muted-foreground">
             <MailCheck className="size-4 shrink-0 text-primary" />
             <span className="truncate">Code sent to {values.email.trim()}</span>
           </div>
 
-          <div className="flex justify-between gap-2">
-            {code.map((digit, i) => (
-              <input
-                key={i}
-                ref={(el) => {
-                  inputsRef.current[i] = el;
-                }}
-                value={digit}
-                onChange={(e) => setDigit(i, e.target.value)}
-                onKeyDown={handleKeyDown(i)}
-                inputMode="numeric"
-                autoComplete="one-time-code"
-                maxLength={6}
-                aria-label={`Digit ${i + 1}`}
-                className={`h-14 w-full rounded-xl border bg-card text-center font-display text-xl font-semibold outline-none transition-all duration-300 focus:border-primary focus:shadow-[0_0_0_4px_color-mix(in_oklab,var(--primary)_16%,transparent)] ${
-                  codeError ? "border-destructive" : "border-border hover:border-primary/50"
-                }`}
-              />
-            ))}
-          </div>
+          <OtpInput
+            value={code}
+            onChange={(next) => {
+              setCode(next);
+              setCodeError("");
+            }}
+            onComplete={handleVerify}
+            disabled={loading}
+            error={!!codeError}
+          />
+
           {codeError && (
-            <p className="animate-fade-up text-xs font-medium text-destructive">{codeError}</p>
+            <p role="alert" className="animate-fade-up text-xs font-medium text-destructive">
+              {codeError}
+            </p>
           )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-primary text-[15px] font-semibold text-primary-foreground shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-elevated active:translate-y-0 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-70"
-          >
-            {loading && <Spinner />}
-            {loading ? "Verifying…" : "Verify & create account"}
-          </button>
+          <p className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+            {loading && <span className="animate-pulse">Verifying…</span>}
+            {!loading && "The code submits automatically."}
+          </p>
 
           <div className="flex items-center justify-between text-sm">
             <button
               type="button"
               onClick={() => setStep("details")}
-              className="inline-flex items-center gap-1.5 font-medium text-muted-foreground transition-colors hover:text-foreground"
+              disabled={loading}
+              className="inline-flex items-center gap-1.5 rounded-md font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
             >
               <ArrowLeft className="size-4" /> Edit details
             </button>
-            <button
-              type="button"
-              onClick={() =>
-                toast.success("Code resent", { description: "Use 123456 while email is mocked." })
-              }
-              className="font-medium text-primary transition-opacity hover:opacity-80"
-            >
-              Resend code
-            </button>
+            {seconds > 0 ? (
+              <span className="text-muted-foreground">Resend in {mmss}</span>
+            ) : (
+              <button
+                type="button"
+                disabled={loading}
+                onClick={() => {
+                  setSeconds(RESEND_SECONDS);
+                  setCode(Array(6).fill(""));
+                  setCodeError("");
+                  toast.success("Code resent", { duration: 2000 });
+                }}
+                className="rounded-md font-medium text-primary transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
+              >
+                Resend code
+              </button>
+            )}
           </div>
 
-          <p className="rounded-xl bg-secondary px-4 py-3 text-center text-xs text-muted-foreground">
-            Email delivery isn't live yet — use the demo code{" "}
+          <p className="rounded-2xl bg-secondary/60 px-4 py-3 text-center text-xs text-muted-foreground">
+            Email delivery isn't live yet — use demo code{" "}
             <span className="font-semibold text-foreground">123456</span>
           </p>
-        </form>
+        </div>
       )}
     </AuthLayout>
   );
