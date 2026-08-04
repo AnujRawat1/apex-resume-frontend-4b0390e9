@@ -54,6 +54,20 @@
   --animate-float: float 7s ease-in-out infinite;
   --animate-slide-in-left: slide-in-left 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-slide-in-right: slide-in-right 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-shake: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  --animate-pop-in: pop-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes shake {
+  10%, 90% { transform: translateX(-1.5px); }
+  20%, 80% { transform: translateX(3px); }
+  30%, 50%, 70% { transform: translateX(-5px); }
+  40%, 60% { transform: translateX(5px); }
+}
+
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 @keyframes slide-in-left {
@@ -117,9 +131,9 @@
   --card-foreground: oklch(0.19 0.03 250);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.19 0.03 250);
-  --primary: oklch(0.52 0.16 244);
+  --primary: oklch(0.53 0.22 292);
   --primary-foreground: oklch(0.99 0.005 240);
-  --primary-glow: oklch(0.72 0.13 200);
+  --primary-glow: oklch(0.68 0.19 318);
   --secondary: oklch(0.955 0.012 240);
   --secondary-foreground: oklch(0.28 0.04 250);
   --muted: oklch(0.955 0.012 240);
@@ -131,7 +145,7 @@
   --success: oklch(0.62 0.14 160);
   --border: oklch(0.9 0.012 245);
   --input: oklch(0.9 0.012 245);
-  --ring: oklch(0.52 0.16 244);
+  --ring: oklch(0.53 0.22 292);
   --chart-1: oklch(0.52 0.16 244);
   --chart-2: oklch(0.72 0.13 200);
   --chart-3: oklch(0.62 0.14 160);
@@ -139,12 +153,12 @@
   --chart-5: oklch(0.6 0.16 300);
   --sidebar: oklch(0.985 0.005 240);
   --sidebar-foreground: oklch(0.19 0.03 250);
-  --sidebar-primary: oklch(0.52 0.16 244);
+  --sidebar-primary: oklch(0.53 0.22 292);
   --sidebar-primary-foreground: oklch(0.99 0.005 240);
   --sidebar-accent: oklch(0.955 0.012 240);
   --sidebar-accent-foreground: oklch(0.28 0.04 250);
   --sidebar-border: oklch(0.9 0.012 245);
-  --sidebar-ring: oklch(0.52 0.16 244);
+  --sidebar-ring: oklch(0.53 0.22 292);
 
   --gradient-primary: linear-gradient(135deg, var(--primary), var(--primary-glow));
   --gradient-surface: linear-gradient(
@@ -163,9 +177,9 @@
   --card-foreground: oklch(0.96 0.008 250);
   --popover: oklch(0.21 0.028 258);
   --popover-foreground: oklch(0.96 0.008 250);
-  --primary: oklch(0.68 0.14 236);
+  --primary: oklch(0.62 0.22 293);
   --primary-foreground: oklch(0.16 0.025 258);
-  --primary-glow: oklch(0.78 0.12 195);
+  --primary-glow: oklch(0.72 0.18 320);
   --secondary: oklch(0.26 0.03 258);
   --secondary-foreground: oklch(0.96 0.008 250);
   --muted: oklch(0.26 0.03 258);
@@ -177,15 +191,15 @@
   --success: oklch(0.7 0.14 160);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 14%);
-  --ring: oklch(0.68 0.14 236);
+  --ring: oklch(0.62 0.22 293);
   --sidebar: oklch(0.19 0.028 258);
   --sidebar-foreground: oklch(0.96 0.008 250);
-  --sidebar-primary: oklch(0.68 0.14 236);
+  --sidebar-primary: oklch(0.62 0.22 293);
   --sidebar-primary-foreground: oklch(0.16 0.025 258);
   --sidebar-accent: oklch(0.26 0.03 258);
   --sidebar-accent-foreground: oklch(0.96 0.008 250);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.68 0.14 236);
+  --sidebar-ring: oklch(0.62 0.22 293);
 
   --shadow-soft: 0 1px 2px oklch(0 0 0 / 0.4), 0 12px 32px -16px oklch(0 0 0 / 0.6);
   --shadow-elevated: 0 24px 60px -26px color-mix(in oklab, var(--primary) 55%, transparent);
@@ -261,4 +275,30 @@
   filter: blur(90px);
   opacity: 0.35;
   pointer-events: none;
+}
+
+@utility glass-panel {
+  background-color: color-mix(in oklab, var(--card) 62%, transparent);
+  border: 1px solid color-mix(in oklab, var(--border) 100%, transparent);
+  border-radius: var(--radius-3xl);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  box-shadow:
+    var(--shadow-soft),
+    inset 0 1px 0 color-mix(in oklab, white 8%, transparent);
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@utility glow-primary {
+  box-shadow:
+    0 10px 30px -12px color-mix(in oklab, var(--primary) 65%, transparent),
+    0 0 0 1px color-mix(in oklab, var(--primary) 25%, transparent);
+  &:hover:not(:disabled) {
+    box-shadow:
+      0 18px 44px -14px color-mix(in oklab, var(--primary) 75%, transparent),
+      0 0 0 1px color-mix(in oklab, var(--primary) 35%, transparent);
+  }
 }
