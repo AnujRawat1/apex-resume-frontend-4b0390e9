@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { Mail, Lock } from "lucide-react";
 import { AuthLayout } from "@/components/auth-layout";
-import { Field } from "@/components/field";
-import { Spinner } from "@/components/spinner";
+import { AuthInput } from "@/components/auth/auth-input";
+import { AuthButton } from "@/components/auth/auth-button";
+import { OAuthButtons } from "@/components/auth/oauth-buttons";
 import { useAuth } from "@/lib/auth-provider";
 
 export const Route = createFileRoute("/login")({
@@ -21,7 +23,7 @@ export const Route = createFileRoute("/login")({
 function LoginPage() {
   const { login, user, ready } = useAuth();
   const navigate = useNavigate();
-  const [values, setValues] = useState({ username: "", password: "" });
+  const [values, setValues] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState("");
   const [remember, setRemember] = useState(true);
@@ -31,7 +33,7 @@ function LoginPage() {
     if (ready && user) navigate({ to: "/dashboard", replace: true });
   }, [ready, user, navigate]);
 
-  const set = (key: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+  const set = (key: keyof typeof values) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setValues((v) => ({ ...v, [key]: e.target.value }));
     setErrors((prev) => ({ ...prev, [key]: "" }));
     setFormError("");
@@ -39,23 +41,28 @@ function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return;
+
     const next: Record<string, string> = {};
-    if (!values.username.trim()) next["username"] = "Username is required";
+    const email = values.email.trim();
+    if (!email) next["email"] = "Email is required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) && email !== "user")
+      next["email"] = "Enter a valid email address";
     if (!values.password) next["password"] = "Password is required";
     setErrors(next);
     if (Object.keys(next).length) return;
 
     setLoading(true);
-    const res = await login(values.username, values.password);
+    const res = await login(email, values.password);
     setLoading(false);
 
     if (!res.ok) {
       setFormError(res.error ?? "Something went wrong");
-      toast.error("Invalid Username or Password");
+      toast.error("Invalid email or password", { duration: 2200 });
       return;
     }
-    if (remember) window.localStorage.setItem("apex-remember", values.username.trim());
-    toast.success("Welcome back!", { description: "Redirecting to your dashboard." });
+    if (remember) window.localStorage.setItem("apex-remember", email);
+    toast.success("Welcome back", { duration: 1800 });
     navigate({ to: "/dashboard" });
   };
 
@@ -73,28 +80,36 @@ function LoginPage() {
         </>
       }
     >
-      <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+      <form onSubmit={handleSubmit} className="animate-fade-up space-y-5" noValidate>
         {formError && (
-          <div className="animate-fade-up rounded-xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm font-medium text-destructive">
+          <div
+            role="alert"
+            className="animate-fade-up rounded-2xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm font-medium text-destructive"
+          >
             {formError}
           </div>
         )}
 
-        <Field
-          label="Username or email"
-          name="username"
-          placeholder="user"
+        <AuthInput
+          label="Email"
+          name="email"
+          type="email"
+          icon={<Mail />}
+          placeholder="you@company.com"
           autoComplete="username"
-          value={values.username}
-          onChange={set("username")}
-          error={errors["username"]}
+          disabled={loading}
+          value={values.email}
+          onChange={set("email")}
+          error={errors["email"]}
         />
-        <Field
+        <AuthInput
           label="Password"
           name="password"
           type="password"
+          icon={<Lock />}
           placeholder="••••••••"
           autoComplete="current-password"
+          disabled={loading}
           value={values.password}
           onChange={set("password")}
           error={errors["password"]}
@@ -112,25 +127,22 @@ function LoginPage() {
           </label>
           <button
             type="button"
-            onClick={() => toast("Password reset is coming in a later phase.")}
-            className="font-medium text-primary transition-opacity hover:opacity-80"
+            onClick={() => toast.info("Password reset arrives in a later phase.", { duration: 2200 })}
+            className="rounded-md font-medium text-primary transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Forgot password?
           </button>
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-primary text-[15px] font-semibold text-primary-foreground shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-elevated active:translate-y-0 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-70"
-        >
-          {loading && <Spinner />}
-          {loading ? "Signing in…" : "Log in"}
-        </button>
+        <AuthButton type="submit" loading={loading} loadingText="Signing in…">
+          Log in
+        </AuthButton>
 
-        <p className="rounded-xl bg-secondary px-4 py-3 text-center text-xs text-muted-foreground">
-          Demo credentials — username <span className="font-semibold text-foreground">user</span>,
-          password <span className="font-semibold text-foreground">Pass</span>
+        <OAuthButtons disabled={loading} />
+
+        <p className="rounded-2xl bg-secondary/60 px-4 py-3 text-center text-xs text-muted-foreground">
+          Demo credentials — <span className="font-semibold text-foreground">user</span> /{" "}
+          <span className="font-semibold text-foreground">Pass</span>
         </p>
       </form>
     </AuthLayout>
