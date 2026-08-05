@@ -11,10 +11,21 @@ import {
   Target,
   Upload,
 } from "lucide-react";
-import { Logo } from "@/components/logo";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { LandingNav } from "@/components/landing-nav";
+import { SiteFooter } from "@/components/site-footer";
+import { Typewriter } from "@/components/typewriter";
 import { useAuth } from "@/lib/auth-provider";
-import heroIllustration from "@/assets/auth-illustration.png";
+import heroAsset from "@/assets/apexhire-hero.png.asset.json";
+
+const HERO_PHRASES = [
+  "Career Journey.",
+  "Resume.",
+  "Interview.",
+  "Dream Job.",
+  "Job Application.",
+  "Career Growth.",
+  "Offer Journey.",
+];
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -127,47 +138,20 @@ function Landing() {
       <div className="aurora left-[-12%] top-[-12%] size-[460px] bg-primary animate-float" />
       <div className="aurora right-[-10%] top-[18%] size-[400px] bg-primary-glow animate-float" />
 
-      <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Logo />
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            {signedIn ? (
-              <Link
-                to="/dashboard"
-                className="inline-flex h-10 items-center gap-2 rounded-xl bg-gradient-primary px-4 text-sm font-semibold text-primary-foreground shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-elevated"
-              >
-                <LayoutDashboard className="size-4" />
-                Dashboard
-              </Link>
-            ) : (
-              <>
-                <Link
-                  to="/login"
-                  className="inline-flex h-10 items-center rounded-xl border border-border bg-card px-4 text-sm font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-soft"
-                >
-                  Log in
-                </Link>
-                <Link
-                  to="/signup"
-                  className="hidden h-10 items-center rounded-xl bg-gradient-primary px-4 text-sm font-semibold text-primary-foreground shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-elevated sm:inline-flex"
-                >
-                  Get started
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      </header>
+      <LandingNav />
 
-      <main className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+      <main className="relative mx-auto w-full max-w-7xl px-4 pt-20 sm:px-6 lg:px-8">
         <section className="grid animate-fade-up items-center gap-12 py-16 sm:py-24 lg:grid-cols-2">
           <div className="text-center lg:text-left">
             <p className="inline-flex items-center rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-medium text-muted-foreground shadow-soft">
               AI resume · interview · career workspace
             </p>
             <h1 className="mt-7 text-4xl font-semibold leading-[1.08] sm:text-6xl">
-              Your resume, <span className="text-gradient">sharpened by AI</span>.
+              <span className="block">Ace Every Step Of Your</span>
+              <Typewriter
+                phrases={HERO_PHRASES}
+                className="mt-1 text-gradient"
+              />
             </h1>
             <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg lg:mx-0">
               ApexHire scores your resume against real job descriptions, rehearses the interview
@@ -214,18 +198,19 @@ function Landing() {
             </p>
           </div>
 
-          <div className="relative hidden lg:block">
+          <div className="relative">
+            <div className="hero-radial left-1/2 top-1/2 size-[120%] -translate-x-1/2 -translate-y-1/2 opacity-70" />
             <img
-              src={heroIllustration}
-              alt="AI-scored resume with feedback charts and chat bubbles"
-              width={1024}
+              src={heroAsset.url}
+              alt="ApexHire dashboard showing ATS score, resume match and interview score"
+              width={1536}
               height={1024}
-              className="mx-auto w-full max-w-lg animate-float drop-shadow-2xl"
+              className="relative mx-auto w-full max-w-2xl object-contain motion-safe:animate-float-soft"
             />
           </div>
         </section>
 
-        <section className="grid gap-4 pb-6 sm:grid-cols-3">
+        <section id="product" className="grid gap-4 scroll-mt-24 pb-6 sm:grid-cols-3">
           {STATS.map((stat) => (
             <div key={stat.label} className="surface-card hover-lift p-6 text-center">
               <p className="font-display text-4xl font-semibold text-gradient">{stat.value}</p>
@@ -234,7 +219,7 @@ function Landing() {
           ))}
         </section>
 
-        <section className="py-16">
+        <section id="features" className="scroll-mt-24 py-16">
           <div className="text-center">
             <h2 className="text-2xl font-semibold sm:text-3xl">Everything you need to get hired</h2>
             <p className="mx-auto mt-3 max-w-lg text-sm text-muted-foreground sm:text-base">
@@ -256,7 +241,7 @@ function Landing() {
           </div>
         </section>
 
-        <section className="py-10">
+        <section id="how-it-works" className="scroll-mt-24 py-10">
           <h2 className="text-center text-2xl font-semibold sm:text-3xl">How it works</h2>
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {STEPS.map((step, i) => (
@@ -298,7 +283,7 @@ function Landing() {
           </div>
         </section>
 
-        <section className="pb-16">
+        <section id="resources" className="scroll-mt-24 pb-16">
           <h2 className="text-center text-2xl font-semibold sm:text-3xl">Frequently asked</h2>
           <div className="mx-auto mt-8 max-w-2xl space-y-3">
             {FAQS.map((faq) => (
@@ -312,7 +297,7 @@ function Landing() {
           </div>
         </section>
 
-        <section className="surface-card mb-20 overflow-hidden p-8 text-center sm:p-12">
+        <section id="pricing" className="surface-card mb-20 scroll-mt-24 overflow-hidden p-8 text-center sm:p-12">
           <h2 className="text-2xl font-semibold sm:text-3xl">
             Ready to make your next application count?
           </h2>
@@ -331,12 +316,7 @@ function Landing() {
         </section>
       </main>
 
-      <footer className="border-t border-border/60 py-8">
-        <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-3 px-4 text-sm text-muted-foreground sm:flex-row sm:justify-between sm:px-6 lg:px-8">
-          <Logo />
-          <p>© {new Date().getFullYear()} ApexHire</p>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
