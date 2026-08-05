@@ -150,7 +150,7 @@ function Landing() {
               <span className="block">Ace Every Step Of Your</span>
               <Typewriter
                 phrases={HERO_PHRASES}
-                className="mt-1 text-gradient"
+                className="mt-1 block text-primary"
               />
             </h1>
             <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg lg:mx-0">
