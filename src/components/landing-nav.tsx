@@ -67,7 +67,7 @@ export function LandingNav() {
     <div className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center">
       <div
         className={cn(
-          "pointer-events-auto w-full will-change-transform motion-reduce:!transform-none",
+          "pointer-events-auto relative w-full will-change-transform motion-reduce:!transform-none",
           scrolled
             ? "mt-3 max-w-5xl px-3 py-1.5 sm:px-4"
             : "mt-0 max-w-[100rem] px-4 py-3 sm:px-8 lg:px-12",
