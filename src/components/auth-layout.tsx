@@ -41,10 +41,7 @@ export function AuthLayout({
             side === "left" ? "lg:order-2 animate-slide-in-right" : "lg:order-1 animate-slide-in-left",
           )}
         >
-          <p className="inline-flex items-center rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground shadow-soft">
-            ApexHire · AI hiring workspace
-          </p>
-          <h1 className="mt-6 text-5xl font-semibold leading-[1.05]">
+          <h1 className="text-5xl font-semibold leading-[1.05]">
             Land the interview with a <span className="text-gradient">sharper resume</span>.
           </h1>
           <div className="relative mt-8">
