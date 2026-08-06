@@ -6,7 +6,6 @@ import {
   LayoutDashboard,
   MessageSquareText,
   PenLine,
-  ShieldCheck,
   Sparkles,
   Target,
   Upload,
