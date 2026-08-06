@@ -143,10 +143,7 @@ function Landing() {
       <main className="relative mx-auto w-full max-w-7xl px-4 pt-20 sm:px-6 lg:px-8">
         <section className="grid animate-fade-up items-center gap-12 py-16 sm:py-24 lg:grid-cols-2">
           <div className="text-center lg:text-left">
-            <p className="inline-flex items-center rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-medium text-muted-foreground shadow-soft">
-              AI resume · interview · career workspace
-            </p>
-            <h1 className="mt-7 text-4xl font-semibold leading-[1.08] sm:text-6xl">
+            <h1 className="text-4xl font-semibold leading-[1.08] sm:text-6xl">
               <span className="block">Ace Every Step Of Your</span>
               <Typewriter
                 phrases={HERO_PHRASES}
@@ -192,10 +189,6 @@ function Landing() {
                 </>
               )}
             </div>
-            <p className="mt-5 inline-flex items-center gap-2 text-xs text-muted-foreground">
-              <ShieldCheck className="size-4 text-primary" />
-              No credit card required · your documents stay private
-            </p>
           </div>
 
           <div className="relative">
