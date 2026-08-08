@@ -18,8 +18,10 @@ import { Route as HistoryRouteImport } from './routes/history'
 import { Route as JdAnalyzerRouteImport } from './routes/jd-analyzer'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ResumeAnalyzerRouteImport } from './routes/resume-analyzer'
+import { Route as ResumeReportsRouteImport } from './routes/resume-reports'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as ResumeReportIdRouteImport } from './routes/resume-report.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -66,6 +68,11 @@ const ResumeAnalyzerRoute = ResumeAnalyzerRouteImport.update({
   path: '/resume-analyzer',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResumeReportsRoute = ResumeReportsRouteImport.update({
+  id: '/resume-reports',
+  path: '/resume-reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -74,6 +81,11 @@ const SettingsRoute = SettingsRouteImport.update({
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResumeReportIdRoute = ResumeReportIdRouteImport.update({
+  id: '/resume-report/$id',
+  path: '/resume-report/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -87,8 +99,10 @@ export interface FileRoutesByFullPath {
   '/jd-analyzer': typeof JdAnalyzerRoute
   '/login': typeof LoginRoute
   '/resume-analyzer': typeof ResumeAnalyzerRoute
+  '/resume-reports': typeof ResumeReportsRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
+  '/resume-report/$id': typeof ResumeReportIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -100,8 +114,10 @@ export interface FileRoutesByTo {
   '/jd-analyzer': typeof JdAnalyzerRoute
   '/login': typeof LoginRoute
   '/resume-analyzer': typeof ResumeAnalyzerRoute
+  '/resume-reports': typeof ResumeReportsRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
+  '/resume-report/$id': typeof ResumeReportIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -114,8 +130,10 @@ export interface FileRoutesById {
   '/jd-analyzer': typeof JdAnalyzerRoute
   '/login': typeof LoginRoute
   '/resume-analyzer': typeof ResumeAnalyzerRoute
+  '/resume-reports': typeof ResumeReportsRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
+  '/resume-report/$id': typeof ResumeReportIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -129,8 +147,10 @@ export interface FileRouteTypes {
     | '/jd-analyzer'
     | '/login'
     | '/resume-analyzer'
+    | '/resume-reports'
     | '/settings'
     | '/signup'
+    | '/resume-report/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -142,8 +162,10 @@ export interface FileRouteTypes {
     | '/jd-analyzer'
     | '/login'
     | '/resume-analyzer'
+    | '/resume-reports'
     | '/settings'
     | '/signup'
+    | '/resume-report/$id'
   id:
     | '__root__'
     | '/'
@@ -155,8 +177,10 @@ export interface FileRouteTypes {
     | '/jd-analyzer'
     | '/login'
     | '/resume-analyzer'
+    | '/resume-reports'
     | '/settings'
     | '/signup'
+    | '/resume-report/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -169,8 +193,10 @@ export interface RootRouteChildren {
   JdAnalyzerRoute: typeof JdAnalyzerRoute
   LoginRoute: typeof LoginRoute
   ResumeAnalyzerRoute: typeof ResumeAnalyzerRoute
+  ResumeReportsRoute: typeof ResumeReportsRoute
   SettingsRoute: typeof SettingsRoute
   SignupRoute: typeof SignupRoute
+  ResumeReportIdRoute: typeof ResumeReportIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -238,6 +264,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResumeAnalyzerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/resume-reports': {
+      id: '/resume-reports'
+      path: '/resume-reports'
+      fullPath: '/resume-reports'
+      preLoaderRoute: typeof ResumeReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings': {
       id: '/settings'
       path: '/settings'
@@ -250,6 +283,13 @@ declare module '@tanstack/react-router' {
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/resume-report/$id': {
+      id: '/resume-report/$id'
+      path: '/resume-report/$id'
+      fullPath: '/resume-report/$id'
+      preLoaderRoute: typeof ResumeReportIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -265,8 +305,10 @@ const rootRouteChildren: RootRouteChildren = {
   JdAnalyzerRoute: JdAnalyzerRoute,
   LoginRoute: LoginRoute,
   ResumeAnalyzerRoute: ResumeAnalyzerRoute,
+  ResumeReportsRoute: ResumeReportsRoute,
   SettingsRoute: SettingsRoute,
   SignupRoute: SignupRoute,
+  ResumeReportIdRoute: ResumeReportIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
