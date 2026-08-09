@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Github, Linkedin, Mail, Twitter } from "lucide-react";
+import { Github, Globe, Linkedin, Mail } from "lucide-react";
 import { toast } from "sonner";
 import { Logo } from "@/components/logo";
 
