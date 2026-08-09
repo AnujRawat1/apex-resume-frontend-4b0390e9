@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Github, Linkedin, Mail, Twitter } from "lucide-react";
+import { Github, Globe, Linkedin, Mail } from "lucide-react";
 import { toast } from "sonner";
 import { Logo } from "@/components/logo";
 
@@ -41,10 +41,10 @@ const COLUMNS: FooterColumn[] = [
 ];
 
 const SOCIALS = [
-  { label: "GitHub", icon: Github, href: "https://github.com" },
-  { label: "LinkedIn", icon: Linkedin, href: "https://linkedin.com" },
-  { label: "X (Twitter)", icon: Twitter, href: "https://x.com" },
-  { label: "Email", icon: Mail, href: "mailto:hello@apexhire.app" },
+  { label: "GitHub", icon: Github, href: "https://github.com/AnujRawat1" },
+  { label: "LinkedIn", icon: Linkedin, href: "https://www.linkedin.com/in/anuj-rawat1" },
+  { label: "Email", icon: Mail, href: "mailto:anuj.rawat.official1@gmail.com" },
+  { label: "Portfolio", icon: Globe, href: "https://portfolio-main-lilac.vercel.app/" },
 ];
 
 const linkClass =

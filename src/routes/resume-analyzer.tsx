@@ -32,16 +32,19 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/resume-analyzer")({
   head: () => ({
     meta: [
-      { title: "Resume Analyzer — ApexHire" },
+      { title: "AI Resume Review & ATS Score — ApexHire" },
       {
         name: "description",
-        content: "Upload your resume PDF and get an AI-powered ATS, skills and job-match analysis.",
+        content:
+          "Get an AI review of your resume: ATS scoring, skill gaps and personalized feedback that make your applications stronger.",
       },
-      { property: "og:title", content: "Resume Analyzer — ApexHire" },
+      { property: "og:title", content: "AI Resume Review & ATS Score — ApexHire" },
       {
         property: "og:description",
         content: "AI resume scoring across ATS, skills, keywords and job-description alignment.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: ResumeAnalyzerPage,
@@ -63,9 +66,9 @@ function AnalyzerContent() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [file, setFile] = useState<File | null>(null);
+  const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [resumeText, setResumeText] = useState("");
   const [reading, setReading] = useState(false);
-  const [configOpen, setConfigOpen] = useState(false);
   const [dragging, setDragging] = useState(false);
 
   const [role, setRole] = useState<TargetRole>(TARGET_ROLES[0]);
@@ -86,6 +89,16 @@ function AnalyzerContent() {
     const id = window.setInterval(() => setStep((s) => (s + 1) % STEPS.length), 1800);
     return () => window.clearInterval(id);
   }, [analyzing]);
+
+  useEffect(() => {
+    if (!file) {
+      setFileUrl(null);
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    setFileUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [file]);
 
   const acceptFile = useCallback(async (next: File) => {
     if (next.type !== "application/pdf" && !next.name.toLowerCase().endsWith(".pdf")) {
@@ -121,7 +134,6 @@ function AnalyzerContent() {
   const reset = () => {
     setFile(null);
     setResumeText("");
-    setConfigOpen(false);
     if (inputRef.current) inputRef.current.value = "";
   };
 
@@ -171,213 +183,250 @@ function AnalyzerContent() {
 
   if (analyzing) return <AnalyzingState step={step} />;
 
+  const selectClass =
+    "h-11 w-full rounded-xl border border-border bg-card px-3.5 text-sm outline-none transition-all focus:border-primary focus:shadow-[0_0_0_4px_color-mix(in_oklab,var(--primary)_16%,transparent)]";
+
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       <header>
-        <h1 className="text-3xl font-semibold sm:text-4xl">Resume Analyzer</h1>
+        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+          Get an AI review of your resume
+        </h1>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-          Upload your resume, pick a target role, and get an AI breakdown across ATS compatibility,
-          skills, keywords, experience and job-description alignment.
+          Beat the ATS, close your skill gaps, and turn every application into a stronger one — with
+          personalized, evidence-based feedback on what to improve first.
         </p>
       </header>
 
-      {/* Upload */}
-      <section className="surface-card p-5 sm:p-7">
-        <input
-          ref={inputRef}
-          type="file"
-          accept="application/pdf,.pdf"
-          className="sr-only"
-          onChange={(e) => {
-            const f = e.target.files?.[0];
-            if (f) void acceptFile(f);
-          }}
-        />
+      <input
+        ref={inputRef}
+        type="file"
+        accept="application/pdf,.pdf"
+        className="sr-only"
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          if (f) void acceptFile(f);
+        }}
+      />
 
-        {!file ? (
-          <div
-            role="button"
-            tabIndex={0}
-            aria-label="Upload resume PDF"
-            onClick={() => inputRef.current?.click()}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") inputRef.current?.click();
-            }}
-            onDragOver={(e) => {
-              e.preventDefault();
-              setDragging(true);
-            }}
-            onDragLeave={() => setDragging(false)}
-            onDrop={(e) => {
-              e.preventDefault();
-              setDragging(false);
-              const f = e.dataTransfer.files?.[0];
-              if (f) void acceptFile(f);
-            }}
-            className={cn(
-              "flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-6 py-14 text-center transition-all duration-300",
-              dragging
-                ? "border-primary bg-primary/5 scale-[1.01]"
-                : "border-border hover:border-primary/50 hover:bg-secondary/40",
-            )}
-          >
-            {reading ? (
-              <>
-                <Loader2 className="size-8 animate-spin text-primary" />
-                <p className="mt-4 text-sm font-medium">Reading your PDF…</p>
-              </>
-            ) : (
-              <>
-                <span className="grid size-14 place-items-center rounded-2xl bg-gradient-primary text-primary-foreground shadow-soft">
-                  <Upload className="size-6" />
-                </span>
-                <p className="mt-4 text-base font-semibold">Drag & drop your resume here</p>
-                <p className="mt-1 text-sm text-muted-foreground">PDF only · up to 10 MB</p>
-                <span className="mt-5 inline-flex h-11 items-center rounded-xl bg-gradient-primary px-5 text-sm font-semibold text-primary-foreground shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-elevated">
-                  Browse files
-                </span>
-              </>
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
+        {/* Primary workspace — resume preview */}
+        <section className="surface-card order-2 overflow-hidden xl:order-1">
+          <div className="flex items-center gap-2 border-b border-border px-4 py-3">
+            <FileText className="size-4 text-primary" />
+            <p className="truncate text-sm font-medium">
+              {file ? file.name : "Resume preview"}
+            </p>
+            {file && (
+              <span className="ml-auto shrink-0 text-xs text-muted-foreground">
+                {formatBytes(file.size)}
+              </span>
             )}
           </div>
-        ) : (
-          <div className="animate-pop-in flex flex-col gap-4 rounded-2xl border border-[color:var(--success)]/35 bg-[color:var(--success)]/8 p-5 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex min-w-0 items-center gap-4">
-              <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-card shadow-soft">
-                <FileText className="size-5 text-primary" />
-              </span>
-              <div className="min-w-0">
-                <p className="flex items-center gap-2 truncate text-sm font-semibold">
-                  {file.name}
-                  <CheckCircle2 className="size-4 shrink-0 text-[color:var(--success)]" />
-                </p>
-                <p className="mt-0.5 text-xs text-muted-foreground">
-                  {formatBytes(file.size)} · {resumeText.split(/\s+/).length.toLocaleString()} words
-                  extracted
-                </p>
+
+          {fileUrl ? (
+            <object
+              data={fileUrl}
+              type="application/pdf"
+              aria-label="Resume preview"
+              className="h-[65vh] w-full xl:h-[calc(100vh-15rem)]"
+            >
+              <div className="max-h-[65vh] overflow-auto whitespace-pre-wrap p-4 text-xs leading-relaxed text-muted-foreground">
+                {resumeText}
               </div>
+            </object>
+          ) : (
+            <div
+              onDragOver={(e) => {
+                e.preventDefault();
+                setDragging(true);
+              }}
+              onDragLeave={() => setDragging(false)}
+              onDrop={(e) => {
+                e.preventDefault();
+                setDragging(false);
+                const f = e.dataTransfer.files?.[0];
+                if (f) void acceptFile(f);
+              }}
+              className={cn(
+                "flex h-[55vh] flex-col items-center justify-center px-6 text-center transition-colors duration-300 xl:h-[calc(100vh-15rem)]",
+                dragging && "bg-primary/5",
+              )}
+            >
+              <span className="grid size-14 place-items-center rounded-2xl bg-secondary text-muted-foreground">
+                <FileText className="size-6" />
+              </span>
+              <p className="mt-4 text-sm font-semibold">Your resume will appear here</p>
+              <p className="mt-1 max-w-xs text-xs text-muted-foreground">
+                Upload a PDF to inspect it side-by-side with your AI analysis.
+              </p>
             </div>
-            <div className="flex shrink-0 gap-2">
-              <button
-                type="button"
-                onClick={() => inputRef.current?.click()}
-                className="inline-flex h-10 items-center gap-2 rounded-xl border border-border bg-card px-4 text-sm font-medium transition-colors hover:bg-secondary"
-              >
-                <RefreshCw className="size-4" /> Replace
-              </button>
-              <button
-                type="button"
-                onClick={reset}
-                aria-label="Remove resume"
-                className="inline-flex h-10 items-center gap-2 rounded-xl border border-border bg-card px-4 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10"
-              >
-                <Trash2 className="size-4" /> Remove
-              </button>
-            </div>
-          </div>
-        )}
-
-        {!configOpen && (
-          <div className="mt-6 flex justify-end">
-            <button
-              type="button"
-              disabled={!file}
-              onClick={() => setConfigOpen(true)}
-              className="inline-flex h-12 items-center gap-2 rounded-xl bg-gradient-primary px-6 text-sm font-semibold text-primary-foreground shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-elevated disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:translate-y-0"
-            >
-              <Sparkles className="size-4" /> Analyze Resume
-            </button>
-          </div>
-        )}
-      </section>
-
-      {/* Configuration */}
-      {configOpen && file && (
-        <section className="animate-fade-up surface-card p-5 sm:p-7">
-          <h2 className="text-lg font-semibold">Analysis configuration</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Tell the AI who you're targeting so the scoring is calibrated.
-          </p>
-
-          <div className="mt-6 grid gap-5 lg:grid-cols-2">
-            <label className="space-y-1.5">
-              <span className="text-sm font-medium">Target role</span>
-              <select
-                value={role}
-                onChange={(e) => setRole(e.target.value as TargetRole)}
-                className="h-12 w-full rounded-xl border border-border bg-card px-4 text-sm outline-none transition-all focus:border-primary focus:shadow-[0_0_0_4px_color-mix(in_oklab,var(--primary)_16%,transparent)]"
-              >
-                {TARGET_ROLES.map((r) => (
-                  <option key={r} value={r}>
-                    {r}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="space-y-1.5">
-              <span className="text-sm font-medium">Experience level</span>
-              <select
-                value={level}
-                onChange={(e) => setLevel(e.target.value as ExperienceLevel)}
-                className="h-12 w-full rounded-xl border border-border bg-card px-4 text-sm outline-none transition-all focus:border-primary focus:shadow-[0_0_0_4px_color-mix(in_oklab,var(--primary)_16%,transparent)]"
-              >
-                {EXPERIENCE_LEVELS.map((l) => (
-                  <option key={l} value={l}>
-                    {l}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="space-y-1.5 lg:col-span-2">
-              <span className="text-sm font-medium">
-                Resume title <span className="text-muted-foreground">(optional)</span>
-              </span>
-              <input
-                value={title}
-                maxLength={120}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g. Backend resume — Series B startups"
-                className="h-12 w-full rounded-xl border border-border bg-card px-4 text-sm outline-none transition-all placeholder:text-muted-foreground/70 focus:border-primary focus:shadow-[0_0_0_4px_color-mix(in_oklab,var(--primary)_16%,transparent)]"
-              />
-            </label>
-
-            <label className="space-y-1.5 lg:col-span-2">
-              <span className="text-sm font-medium">
-                Target job description <span className="text-muted-foreground">(optional)</span>
-              </span>
-              <textarea
-                value={jd}
-                maxLength={20000}
-                onChange={(e) => setJd(e.target.value)}
-                rows={8}
-                placeholder="Paste the complete job description to unlock the job match score…"
-                className="w-full resize-y rounded-xl border border-border bg-card p-4 text-sm leading-relaxed outline-none transition-all placeholder:text-muted-foreground/70 focus:border-primary focus:shadow-[0_0_0_4px_color-mix(in_oklab,var(--primary)_16%,transparent)]"
-              />
-              <span className="block text-xs text-muted-foreground">
-                {jd.trim() ? `${jd.trim().length} characters — job match score enabled` : "No JD — job match score will be skipped"}
-              </span>
-            </label>
-          </div>
-
-          <div className="mt-6 flex flex-wrap justify-end gap-3">
-            <button
-              type="button"
-              onClick={() => setConfigOpen(false)}
-              className="inline-flex h-12 items-center rounded-xl border border-border bg-card px-5 text-sm font-semibold transition-colors hover:bg-secondary"
-            >
-              Back
-            </button>
-            <button
-              type="button"
-              onClick={() => void runAnalysis()}
-              className="inline-flex h-12 items-center gap-2 rounded-xl bg-gradient-primary px-6 text-sm font-semibold text-primary-foreground shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-elevated"
-            >
-              <Sparkles className="size-4" /> Analyze Resume
-            </button>
-          </div>
+          )}
         </section>
-      )}
+
+        {/* Controls */}
+        <div className="order-1 space-y-5 xl:order-2">
+          <section className="surface-card p-4 sm:p-5">
+            {!file ? (
+              <div
+                role="button"
+                tabIndex={0}
+                aria-label="Upload resume PDF"
+                onClick={() => inputRef.current?.click()}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") inputRef.current?.click();
+                }}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setDragging(true);
+                }}
+                onDragLeave={() => setDragging(false)}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setDragging(false);
+                  const f = e.dataTransfer.files?.[0];
+                  if (f) void acceptFile(f);
+                }}
+                className={cn(
+                  "flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed px-5 py-7 text-center transition-all duration-300",
+                  dragging
+                    ? "border-primary bg-primary/5"
+                    : "border-border hover:border-primary/50 hover:bg-secondary/40",
+                )}
+              >
+                {reading ? (
+                  <>
+                    <Loader2 className="size-6 animate-spin text-primary" />
+                    <p className="mt-3 text-sm font-medium">Reading your PDF…</p>
+                  </>
+                ) : (
+                  <>
+                    <span className="grid size-11 place-items-center rounded-xl bg-gradient-primary text-primary-foreground shadow-soft">
+                      <Upload className="size-5" />
+                    </span>
+                    <p className="mt-3 text-sm font-semibold">Drop your resume here</p>
+                    <p className="mt-1 text-xs text-muted-foreground">PDF only · up to 10 MB</p>
+                    <span className="mt-4 inline-flex h-9 items-center rounded-lg bg-gradient-primary px-4 text-xs font-semibold text-primary-foreground shadow-soft transition-all duration-300 hover:-translate-y-0.5">
+                      Browse files
+                    </span>
+                  </>
+                )}
+              </div>
+            ) : (
+              <div className="animate-pop-in flex items-center gap-3 rounded-xl border border-[color:var(--success)]/35 bg-[color:var(--success)]/8 p-3.5">
+                <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-card shadow-soft">
+                  <CheckCircle2 className="size-5 text-[color:var(--success)]" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold">{file.name}</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    {formatBytes(file.size)} · {resumeText.split(/\s+/).length.toLocaleString()} words
+                  </p>
+                </div>
+                <div className="flex shrink-0 gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => inputRef.current?.click()}
+                    aria-label="Replace resume"
+                    className="grid size-9 place-items-center rounded-lg border border-border bg-card transition-colors hover:bg-secondary"
+                  >
+                    <RefreshCw className="size-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={reset}
+                    aria-label="Remove resume"
+                    className="grid size-9 place-items-center rounded-lg border border-border bg-card text-destructive transition-colors hover:bg-destructive/10"
+                  >
+                    <Trash2 className="size-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+          </section>
+
+          {file && (
+            <section className="animate-fade-up surface-card p-4 sm:p-5">
+              <h2 className="text-base font-semibold">Analysis configuration</h2>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Calibrate the scoring to the role you're targeting.
+              </p>
+
+              <div className="mt-4 grid gap-4">
+                <label className="space-y-1.5">
+                  <span className="text-xs font-medium">Target role</span>
+                  <select
+                    value={role}
+                    onChange={(e) => setRole(e.target.value as TargetRole)}
+                    className={selectClass}
+                  >
+                    {TARGET_ROLES.map((r) => (
+                      <option key={r} value={r}>
+                        {r}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="space-y-1.5">
+                  <span className="text-xs font-medium">Experience level</span>
+                  <select
+                    value={level}
+                    onChange={(e) => setLevel(e.target.value as ExperienceLevel)}
+                    className={selectClass}
+                  >
+                    {EXPERIENCE_LEVELS.map((l) => (
+                      <option key={l} value={l}>
+                        {l}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="space-y-1.5">
+                  <span className="text-xs font-medium">
+                    Resume title <span className="text-muted-foreground">(optional)</span>
+                  </span>
+                  <input
+                    value={title}
+                    maxLength={120}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="e.g. Backend resume — Series B startups"
+                    className={selectClass}
+                  />
+                </label>
+
+                <label className="space-y-1.5">
+                  <span className="text-xs font-medium">
+                    Job description <span className="text-muted-foreground">(optional)</span>
+                  </span>
+                  <textarea
+                    value={jd}
+                    maxLength={20000}
+                    onChange={(e) => setJd(e.target.value)}
+                    rows={4}
+                    placeholder="Paste the JD to unlock the job match score…"
+                    className="w-full resize-y rounded-xl border border-border bg-card p-3.5 text-sm leading-relaxed outline-none transition-all placeholder:text-muted-foreground/70 focus:border-primary focus:shadow-[0_0_0_4px_color-mix(in_oklab,var(--primary)_16%,transparent)]"
+                  />
+                  <span className="block text-[11px] text-muted-foreground">
+                    {jd.trim()
+                      ? `${jd.trim().length} characters — job match score enabled`
+                      : "No JD — job match score will be skipped"}
+                  </span>
+                </label>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => void runAnalysis()}
+                className="mt-5 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-primary text-sm font-semibold text-primary-foreground shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-elevated"
+              >
+                <Sparkles className="size-4" /> Analyze Resume
+              </button>
+            </section>
+          )}
+        </div>
+      </div>
 
       {/* Recent reports */}
       <section>
