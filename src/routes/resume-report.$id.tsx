@@ -133,7 +133,7 @@ function ReportContent() {
         </div>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
         <aside className="xl:sticky xl:top-24 xl:self-start">
           <div className="surface-card overflow-hidden">
             <div className="flex items-center gap-2 border-b border-border px-4 py-3">
