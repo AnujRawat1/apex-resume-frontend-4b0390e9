@@ -13,6 +13,7 @@ import {
 import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
 import { ReportRow } from "@/components/resume/report-row";
+import { PdfViewer } from "@/components/resume/pdf-viewer";
 import { useAuth } from "@/lib/auth-provider";
 import { extractPdfText } from "@/lib/pdf-text";
 import { analyzeResume } from "@/lib/resume-analysis.functions";
@@ -66,7 +67,6 @@ function AnalyzerContent() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [file, setFile] = useState<File | null>(null);
-  const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [resumeText, setResumeText] = useState("");
   const [reading, setReading] = useState(false);
   const [dragging, setDragging] = useState(false);
@@ -89,16 +89,6 @@ function AnalyzerContent() {
     const id = window.setInterval(() => setStep((s) => (s + 1) % STEPS.length), 1800);
     return () => window.clearInterval(id);
   }, [analyzing]);
-
-  useEffect(() => {
-    if (!file) {
-      setFileUrl(null);
-      return;
-    }
-    const url = URL.createObjectURL(file);
-    setFileUrl(url);
-    return () => URL.revokeObjectURL(url);
-  }, [file]);
 
   const acceptFile = useCallback(async (next: File) => {
     if (next.type !== "application/pdf" && !next.name.toLowerCase().endsWith(".pdf")) {
