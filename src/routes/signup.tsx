@@ -79,8 +79,19 @@ function SignupPage() {
     if (Object.keys(next).length) return;
 
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 700));
+    const res = await signup({
+      fullName: values.fullName.trim(),
+      email: values.email.trim(),
+      password: values.password,
+    });
     setLoading(false);
+
+    if (!res.ok) {
+      setFormError(res.error ?? "Sign up failed");
+      toast.error(res.error ?? "Sign up failed", { duration: 2600 });
+      return;
+    }
+
     setCode(Array(6).fill(""));
     setCodeError("");
     setSeconds(RESEND_SECONDS);
@@ -92,36 +103,22 @@ function SignupPage() {
     async (entered: string) => {
       if (loading) return;
       setLoading(true);
-      await new Promise((r) => setTimeout(r, 600));
+      const res = await verifyEmail(values.email.trim(), entered.trim());
+      setLoading(false);
 
-      if (entered.toUpperCase() !== DEMO_CODE) {
-        setLoading(false);
-        setCodeError("That verification code is invalid.");
+      if (!res.ok) {
+        setCodeError(res.error ?? "That verification code is invalid.");
         setCode(Array(6).fill(""));
         toast.error("Invalid verification code", { duration: 2200 });
         return;
       }
 
-      const username = values.email.trim().split("@")[0]!.replace(/[^a-zA-Z0-9_]/g, "");
-      const res = await signup({
-        fullName: values.fullName.trim(),
-        username,
-        email: values.email.trim(),
-        password: values.password,
-      });
-      setLoading(false);
-
-      if (!res.ok) {
-        setFormError(res.error ?? "Something went wrong");
-        toast.error(res.error ?? "Sign up failed", { duration: 2400 });
-        setStep("details");
-        return;
-      }
       toast.success("Account created", { duration: 1800 });
       navigate({ to: "/dashboard" });
     },
-    [loading, navigate, signup, values],
+    [loading, navigate, verifyEmail, values],
   );
+
 
   const mmss = `00:${String(seconds).padStart(2, "0")}`;
 
