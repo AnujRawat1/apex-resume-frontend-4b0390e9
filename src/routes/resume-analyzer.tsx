@@ -186,15 +186,32 @@ function AnalyzerContent() {
   const selectClass =
     "h-11 w-full rounded-xl border border-border bg-card px-3.5 text-sm outline-none transition-all focus:border-primary focus:shadow-[0_0_0_4px_color-mix(in_oklab,var(--primary)_16%,transparent)]";
 
+  const dropHandlers = {
+    onDragOver: (e: React.DragEvent) => {
+      e.preventDefault();
+      setDragging(true);
+    },
+    onDragLeave: () => setDragging(false),
+    onDrop: (e: React.DragEvent) => {
+      e.preventDefault();
+      setDragging(false);
+      const f = e.dataTransfer.files?.[0];
+      if (f) void acceptFile(f);
+    },
+  };
+
   return (
-    <div className="space-y-8">
-      <header>
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+    <div className="space-y-10">
+      <header className="mx-auto max-w-2xl text-center">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-primary">
+          <Sparkles className="size-3.5" /> AI resume review
+        </span>
+        <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
           Get an AI review of your resume
         </h1>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-          Beat the ATS, close your skill gaps, and turn every application into a stronger one — with
-          personalized, evidence-based feedback on what to improve first.
+        <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+          ATS-optimized scoring with personalized feedback on your skills, sections and content — so
+          every application has a stronger shot at the interview.
         </p>
       </header>
 
@@ -209,110 +226,85 @@ function AnalyzerContent() {
         }}
       />
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
-        {/* Primary workspace — resume preview */}
-        <section className="surface-card order-2 overflow-hidden xl:order-1">
-          <div className="flex items-center gap-2 border-b border-border px-4 py-3">
-            <FileText className="size-4 text-primary" />
-            <p className="truncate text-sm font-medium">
-              {file ? file.name : "Resume preview"}
-            </p>
-            {file && (
-              <span className="ml-auto shrink-0 text-xs text-muted-foreground">
-                {formatBytes(file.size)}
-              </span>
+      {!file ? (
+        /* ── State A — nothing uploaded: full-width, compact upload ── */
+        <section className="animate-fade-up mx-auto w-full max-w-5xl">
+          <div
+            role="button"
+            tabIndex={0}
+            aria-label="Upload resume PDF"
+            onClick={() => inputRef.current?.click()}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") inputRef.current?.click();
+            }}
+            {...dropHandlers}
+            className={cn(
+              "surface-card flex cursor-pointer flex-col items-center gap-4 border-2 border-dashed px-6 py-8 text-center transition-all duration-300 sm:flex-row sm:justify-between sm:gap-6 sm:px-8 sm:text-left",
+              dragging
+                ? "border-primary bg-primary/5"
+                : "border-border/80 hover:border-primary/50 hover:bg-secondary/30",
+            )}
+          >
+            {reading ? (
+              <div className="mx-auto flex items-center gap-3">
+                <Loader2 className="size-5 animate-spin text-primary" />
+                <p className="text-sm font-medium">Reading your PDF…</p>
+              </div>
+            ) : (
+              <>
+                <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center">
+                  <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-gradient-primary text-primary-foreground shadow-soft">
+                    <Upload className="size-5" />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="text-base font-semibold">Drop your resume here</p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      PDF only · up to 10 MB · text-based resumes score best
+                    </p>
+                  </div>
+                </div>
+                <span className="inline-flex h-11 shrink-0 items-center rounded-xl bg-gradient-primary px-5 text-sm font-semibold text-primary-foreground shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-elevated">
+                  Choose PDF
+                </span>
+              </>
             )}
           </div>
 
-          {fileUrl ? (
-            <object
-              data={fileUrl}
-              type="application/pdf"
-              aria-label="Resume preview"
-              className="h-[65vh] w-full xl:h-[calc(100vh-15rem)]"
-            >
-              <div className="max-h-[65vh] overflow-auto whitespace-pre-wrap p-4 text-xs leading-relaxed text-muted-foreground">
-                {resumeText}
-              </div>
-            </object>
-          ) : (
-            <div
-              onDragOver={(e) => {
-                e.preventDefault();
-                setDragging(true);
-              }}
-              onDragLeave={() => setDragging(false)}
-              onDrop={(e) => {
-                e.preventDefault();
-                setDragging(false);
-                const f = e.dataTransfer.files?.[0];
-                if (f) void acceptFile(f);
-              }}
-              className={cn(
-                "flex h-[55vh] flex-col items-center justify-center px-6 text-center transition-colors duration-300 xl:h-[calc(100vh-15rem)]",
-                dragging && "bg-primary/5",
-              )}
-            >
-              <span className="grid size-14 place-items-center rounded-2xl bg-secondary text-muted-foreground">
-                <FileText className="size-6" />
-              </span>
-              <p className="mt-4 text-sm font-semibold">Your resume will appear here</p>
-              <p className="mt-1 max-w-xs text-xs text-muted-foreground">
-                Upload a PDF to inspect it side-by-side with your AI analysis.
-              </p>
-            </div>
-          )}
+          <ul className="mt-5 grid gap-3 sm:grid-cols-3">
+            {[
+              ["ATS compatibility", "See how parsers read your resume before a recruiter does."],
+              ["Skill & keyword gaps", "Spot the terms your target role expects but you're missing."],
+              ["Actionable rewrites", "Prioritized fixes you can apply in minutes."],
+            ].map(([title, copy]) => (
+              <li key={title} className="surface-card p-4">
+                <p className="text-sm font-semibold">{title}</p>
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{copy}</p>
+              </li>
+            ))}
+          </ul>
         </section>
+      ) : (
+        /* ── State B — uploaded: 50 / 50 workspace ── */
+        <div className="animate-fade-up grid gap-6 lg:grid-cols-2">
+          {/* Left — large resume preview */}
+          <section className="surface-card order-2 flex min-h-0 flex-col overflow-hidden lg:order-1 lg:sticky lg:top-24 lg:h-[calc(100vh-9rem)]">
+            <div className="flex items-center gap-2 border-b border-border px-4 py-3">
+              <FileText className="size-4 shrink-0 text-primary" />
+              <p className="truncate text-sm font-medium">{file.name}</p>
+              <span className="ml-auto shrink-0 text-xs text-muted-foreground">
+                {formatBytes(file.size)}
+              </span>
+            </div>
+            <PdfViewer
+              source={file}
+              fallbackText={resumeText}
+              className="min-h-[60vh] flex-1 lg:min-h-0"
+            />
+          </section>
 
-        {/* Controls */}
-        <div className="order-1 space-y-5 xl:order-2">
-          <section className="surface-card p-4 sm:p-5">
-            {!file ? (
-              <div
-                role="button"
-                tabIndex={0}
-                aria-label="Upload resume PDF"
-                onClick={() => inputRef.current?.click()}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") inputRef.current?.click();
-                }}
-                onDragOver={(e) => {
-                  e.preventDefault();
-                  setDragging(true);
-                }}
-                onDragLeave={() => setDragging(false)}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  setDragging(false);
-                  const f = e.dataTransfer.files?.[0];
-                  if (f) void acceptFile(f);
-                }}
-                className={cn(
-                  "flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed px-5 py-7 text-center transition-all duration-300",
-                  dragging
-                    ? "border-primary bg-primary/5"
-                    : "border-border hover:border-primary/50 hover:bg-secondary/40",
-                )}
-              >
-                {reading ? (
-                  <>
-                    <Loader2 className="size-6 animate-spin text-primary" />
-                    <p className="mt-3 text-sm font-medium">Reading your PDF…</p>
-                  </>
-                ) : (
-                  <>
-                    <span className="grid size-11 place-items-center rounded-xl bg-gradient-primary text-primary-foreground shadow-soft">
-                      <Upload className="size-5" />
-                    </span>
-                    <p className="mt-3 text-sm font-semibold">Drop your resume here</p>
-                    <p className="mt-1 text-xs text-muted-foreground">PDF only · up to 10 MB</p>
-                    <span className="mt-4 inline-flex h-9 items-center rounded-lg bg-gradient-primary px-4 text-xs font-semibold text-primary-foreground shadow-soft transition-all duration-300 hover:-translate-y-0.5">
-                      Browse files
-                    </span>
-                  </>
-                )}
-              </div>
-            ) : (
+          {/* Right — configuration + analyze */}
+          <div className="order-1 space-y-5 lg:order-2 lg:max-h-[calc(100vh-9rem)] lg:overflow-y-auto lg:pr-1">
+            <section className="surface-card p-4 sm:p-5">
               <div className="animate-pop-in flex items-center gap-3 rounded-xl border border-[color:var(--success)]/35 bg-[color:var(--success)]/8 p-3.5">
                 <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-card shadow-soft">
                   <CheckCircle2 className="size-5 text-[color:var(--success)]" />
@@ -320,7 +312,8 @@ function AnalyzerContent() {
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-semibold">{file.name}</p>
                   <p className="mt-0.5 text-xs text-muted-foreground">
-                    {formatBytes(file.size)} · {resumeText.split(/\s+/).length.toLocaleString()} words
+                    {formatBytes(file.size)} ·{" "}
+                    {resumeText.split(/\s+/).length.toLocaleString()} words
                   </p>
                 </div>
                 <div className="flex shrink-0 gap-1.5">
@@ -342,17 +335,15 @@ function AnalyzerContent() {
                   </button>
                 </div>
               </div>
-            )}
-          </section>
+            </section>
 
-          {file && (
             <section className="animate-fade-up surface-card p-4 sm:p-5">
               <h2 className="text-base font-semibold">Analysis configuration</h2>
               <p className="mt-1 text-xs text-muted-foreground">
                 Calibrate the scoring to the role you're targeting.
               </p>
 
-              <div className="mt-4 grid gap-4">
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 <label className="space-y-1.5">
                   <span className="text-xs font-medium">Target role</span>
                   <select
@@ -383,7 +374,7 @@ function AnalyzerContent() {
                   </select>
                 </label>
 
-                <label className="space-y-1.5">
+                <label className="space-y-1.5 sm:col-span-2">
                   <span className="text-xs font-medium">
                     Resume title <span className="text-muted-foreground">(optional)</span>
                   </span>
@@ -396,7 +387,7 @@ function AnalyzerContent() {
                   />
                 </label>
 
-                <label className="space-y-1.5">
+                <label className="space-y-1.5 sm:col-span-2">
                   <span className="text-xs font-medium">
                     Job description <span className="text-muted-foreground">(optional)</span>
                   </span>
@@ -424,9 +415,9 @@ function AnalyzerContent() {
                 <Sparkles className="size-4" /> Analyze Resume
               </button>
             </section>
-          )}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Recent reports */}
       <section>
@@ -455,6 +446,7 @@ function AnalyzerContent() {
     </div>
   );
 }
+
 
 function AnalyzingState({ step }: { step: number }) {
   return (
