@@ -27,9 +27,8 @@ export const Route = createFileRoute("/signup")({
 
 const initial = { fullName: "", email: "", password: "", confirmPassword: "" };
 
-// Temporary until the email service is wired up. Alphanumeric, case-insensitive.
-const DEMO_CODE = "123456";
 const RESEND_SECONDS = 25;
+
 
 function SignupPage() {
   const { signup, user, ready } = useAuth();
