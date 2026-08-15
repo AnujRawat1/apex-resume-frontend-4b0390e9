@@ -31,7 +31,7 @@ const RESEND_SECONDS = 25;
 
 
 function SignupPage() {
-  const { signup, user, ready } = useAuth();
+  const { signup, verifyEmail, resendCode, user, ready } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState<"details" | "verify">("details");
   const [values, setValues] = useState(initial);
