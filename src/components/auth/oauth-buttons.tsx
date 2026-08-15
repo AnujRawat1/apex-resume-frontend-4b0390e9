@@ -1,4 +1,4 @@
-import { toast } from "sonner";
+import { oauthUrl } from "@/lib/api-client";
 
 function GoogleIcon() {
   return (
@@ -32,8 +32,9 @@ const BASE =
   "inline-flex h-11 w-full items-center justify-center gap-2.5 rounded-2xl border border-border bg-card/50 text-sm font-medium text-foreground backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/45 hover:bg-primary/10 active:translate-y-0 active:scale-[0.985] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-60";
 
 export function OAuthButtons({ disabled = false }: { disabled?: boolean }) {
-  const notReady = (provider: string) =>
-    toast.info(`${provider} sign-in is coming soon.`, { duration: 2200 });
+  const go = (provider: "google" | "github") => {
+    window.location.href = oauthUrl(provider);
+  };
 
   return (
     <div className="space-y-4">
@@ -45,11 +46,11 @@ export function OAuthButtons({ disabled = false }: { disabled?: boolean }) {
         <span className="h-px flex-1 bg-border" />
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
-        <button type="button" disabled={disabled} onClick={() => notReady("Google")} className={BASE}>
+        <button type="button" disabled={disabled} onClick={() => go("google")} className={BASE}>
           <GoogleIcon />
           Google
         </button>
-        <button type="button" disabled={disabled} onClick={() => notReady("GitHub")} className={BASE}>
+        <button type="button" disabled={disabled} onClick={() => go("github")} className={BASE}>
           <GithubIcon />
           GitHub
         </button>

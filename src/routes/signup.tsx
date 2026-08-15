@@ -27,12 +27,11 @@ export const Route = createFileRoute("/signup")({
 
 const initial = { fullName: "", email: "", password: "", confirmPassword: "" };
 
-// Temporary until the email service is wired up. Alphanumeric, case-insensitive.
-const DEMO_CODE = "123456";
 const RESEND_SECONDS = 25;
 
+
 function SignupPage() {
-  const { signup, user, ready } = useAuth();
+  const { signup, verifyEmail, resendCode, user, ready } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState<"details" | "verify">("details");
   const [values, setValues] = useState(initial);
@@ -80,8 +79,19 @@ function SignupPage() {
     if (Object.keys(next).length) return;
 
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 700));
+    const res = await signup({
+      fullName: values.fullName.trim(),
+      email: values.email.trim(),
+      password: values.password,
+    });
     setLoading(false);
+
+    if (!res.ok) {
+      setFormError(res.error ?? "Sign up failed");
+      toast.error(res.error ?? "Sign up failed", { duration: 2600 });
+      return;
+    }
+
     setCode(Array(6).fill(""));
     setCodeError("");
     setSeconds(RESEND_SECONDS);
@@ -93,36 +103,22 @@ function SignupPage() {
     async (entered: string) => {
       if (loading) return;
       setLoading(true);
-      await new Promise((r) => setTimeout(r, 600));
+      const res = await verifyEmail(values.email.trim(), entered.trim());
+      setLoading(false);
 
-      if (entered.toUpperCase() !== DEMO_CODE) {
-        setLoading(false);
-        setCodeError("That verification code is invalid.");
+      if (!res.ok) {
+        setCodeError(res.error ?? "That verification code is invalid.");
         setCode(Array(6).fill(""));
         toast.error("Invalid verification code", { duration: 2200 });
         return;
       }
 
-      const username = values.email.trim().split("@")[0]!.replace(/[^a-zA-Z0-9_]/g, "");
-      const res = await signup({
-        fullName: values.fullName.trim(),
-        username,
-        email: values.email.trim(),
-        password: values.password,
-      });
-      setLoading(false);
-
-      if (!res.ok) {
-        setFormError(res.error ?? "Something went wrong");
-        toast.error(res.error ?? "Sign up failed", { duration: 2400 });
-        setStep("details");
-        return;
-      }
       toast.success("Account created", { duration: 1800 });
       navigate({ to: "/dashboard" });
     },
-    [loading, navigate, signup, values],
+    [loading, navigate, verifyEmail, values],
   );
+
 
   const mmss = `00:${String(seconds).padStart(2, "0")}`;
 
@@ -257,10 +253,17 @@ function SignupPage() {
                 type="button"
                 disabled={loading}
                 onClick={() => {
-                  setSeconds(RESEND_SECONDS);
-                  setCode(Array(6).fill(""));
-                  setCodeError("");
-                  toast.success("Code resent", { duration: 2000 });
+                  void (async () => {
+                    const res = await resendCode(values.email.trim());
+                    if (!res.ok) {
+                      toast.error(res.error ?? "Couldn't resend the code", { duration: 2400 });
+                      return;
+                    }
+                    setSeconds(RESEND_SECONDS);
+                    setCode(Array(6).fill(""));
+                    setCodeError("");
+                    toast.success("Code resent", { duration: 2000 });
+                  })();
                 }}
                 className="rounded-md font-medium text-primary transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
               >
@@ -270,9 +273,9 @@ function SignupPage() {
           </div>
 
           <p className="rounded-2xl bg-secondary/60 px-4 py-3 text-center text-xs text-muted-foreground">
-            Email delivery isn't live yet — use demo code{" "}
-            <span className="font-semibold text-foreground">123456</span>
+            The 6-digit code expires shortly — check your inbox and spam folder.
           </p>
+
         </div>
       )}
     </AuthLayout>

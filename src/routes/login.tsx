@@ -21,7 +21,7 @@ export const Route = createFileRoute("/login")({
 });
 
 function LoginPage() {
-  const { login, user, ready } = useAuth();
+  const { login, user, ready, offline } = useAuth();
   const navigate = useNavigate();
   const [values, setValues] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -140,10 +140,13 @@ function LoginPage() {
 
         <OAuthButtons disabled={loading} />
 
-        <p className="rounded-2xl bg-secondary/60 px-4 py-3 text-center text-xs text-muted-foreground">
-          Demo credentials — <span className="font-semibold text-foreground">user</span> /{" "}
-          <span className="font-semibold text-foreground">Pass</span>
-        </p>
+        {offline && (
+          <p className="rounded-2xl bg-secondary/60 px-4 py-3 text-center text-xs text-muted-foreground">
+            Server offline — preview with <span className="font-semibold text-foreground">user</span>{" "}
+            / <span className="font-semibold text-foreground">Pass</span>
+          </p>
+        )}
+
       </form>
     </AuthLayout>
   );
