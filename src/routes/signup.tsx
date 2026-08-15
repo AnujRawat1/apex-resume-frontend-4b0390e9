@@ -253,10 +253,17 @@ function SignupPage() {
                 type="button"
                 disabled={loading}
                 onClick={() => {
-                  setSeconds(RESEND_SECONDS);
-                  setCode(Array(6).fill(""));
-                  setCodeError("");
-                  toast.success("Code resent", { duration: 2000 });
+                  void (async () => {
+                    const res = await resendCode(values.email.trim());
+                    if (!res.ok) {
+                      toast.error(res.error ?? "Couldn't resend the code", { duration: 2400 });
+                      return;
+                    }
+                    setSeconds(RESEND_SECONDS);
+                    setCode(Array(6).fill(""));
+                    setCodeError("");
+                    toast.success("Code resent", { duration: 2000 });
+                  })();
                 }}
                 className="rounded-md font-medium text-primary transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
               >
@@ -266,9 +273,9 @@ function SignupPage() {
           </div>
 
           <p className="rounded-2xl bg-secondary/60 px-4 py-3 text-center text-xs text-muted-foreground">
-            Email delivery isn't live yet — use demo code{" "}
-            <span className="font-semibold text-foreground">123456</span>
+            The 6-digit code expires shortly — check your inbox and spam folder.
           </p>
+
         </div>
       )}
     </AuthLayout>
