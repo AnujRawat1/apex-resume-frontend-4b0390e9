@@ -4,11 +4,19 @@
  * Talks to the Spring backend documented in API_DOCUMENTATION.md.
  * Base URL is configurable through VITE_API_BASE_URL and defaults to the
  * local backend (http://localhost:9000).
+ *
+ * Note: an EMPTY VITE_API_BASE_URL must also fall back to the default —
+ * otherwise requests become relative and hit the frontend origin instead.
  */
 
-export const API_BASE_URL: string =
-  (import.meta.env["VITE_API_BASE_URL"] as string | undefined)?.replace(/\/$/, "") ??
-  "http://localhost:9000";
+const configuredBaseUrl = (import.meta.env["VITE_API_BASE_URL"] as string | undefined)?.trim();
+
+export const DEFAULT_API_BASE_URL = "http://localhost:9000";
+
+export const API_BASE_URL: string = configuredBaseUrl
+  ? configuredBaseUrl.replace(/\/$/, "")
+  : DEFAULT_API_BASE_URL;
+
 
 const ACCESS_KEY = "apex-access-token";
 const REFRESH_KEY = "apex-refresh-token";
