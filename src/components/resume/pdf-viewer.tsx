@@ -18,6 +18,28 @@ type PdfViewerProps = {
   className?: string;
 };
 
+/**
+ * pdf.js v6 relies on the proposed Map.prototype.getOrInsert(Computed) methods,
+ * which aren't shipping in browsers yet. Tiny spec-shaped polyfill.
+ */
+function ensureMapHelpers() {
+  const proto = Map.prototype as unknown as Record<string, unknown>;
+  if (typeof proto["getOrInsertComputed"] !== "function") {
+    proto["getOrInsertComputed"] = function <K, V>(this: Map<K, V>, key: K, factory: (k: K) => V) {
+      if (!this.has(key)) this.set(key, factory(key));
+      return this.get(key) as V;
+    };
+  }
+  if (typeof proto["getOrInsert"] !== "function") {
+    proto["getOrInsert"] = function <K, V>(this: Map<K, V>, key: K, value: V) {
+      if (!this.has(key)) this.set(key, value);
+      return this.get(key) as V;
+    };
+  }
+}
+
+if (typeof window !== "undefined") ensureMapHelpers();
+
 const MIN_ZOOM = 0.6;
 const MAX_ZOOM = 2.4;
 
@@ -54,6 +76,7 @@ export function PdfViewer({ source, fallbackText, className }: PdfViewerProps) {
       setLoading(true);
       setFailed(false);
       try {
+        ensureMapHelpers();
         const pdfjs = await import("pdfjs-dist");
         const workerUrl = (await import("pdfjs-dist/build/pdf.worker.min.mjs?url")).default;
         pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;

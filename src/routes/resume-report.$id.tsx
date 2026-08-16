@@ -4,6 +4,7 @@ import { ArrowLeft, Download, FileText, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
 import { AnalysisPanel } from "@/components/resume/analysis-panel";
+import { PdfViewer } from "@/components/resume/pdf-viewer";
 import { Spinner } from "@/components/spinner";
 import { useAuth } from "@/lib/auth-provider";
 import {
@@ -133,9 +134,9 @@ function ReportContent() {
         </div>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
-        <aside className="xl:sticky xl:top-24 xl:self-start">
-          <div className="surface-card overflow-hidden">
+      <div className="grid gap-6 lg:grid-cols-2">
+        <aside className="lg:sticky lg:top-24 lg:self-start">
+          <div className="surface-card flex min-h-0 flex-col overflow-hidden lg:h-[calc(100vh-11rem)]">
             <div className="flex items-center gap-2 border-b border-border px-4 py-3">
               <FileText className="size-4 text-primary" />
               <p className="truncate text-sm font-medium">{report.fileName}</p>
@@ -144,16 +145,11 @@ function ReportContent() {
               </span>
             </div>
             {pdfUrl ? (
-              <object
-                data={pdfUrl}
-                type="application/pdf"
-                aria-label="Resume preview"
-                className="h-[70vh] w-full xl:h-[calc(100vh-14rem)]"
-              >
-                <div className="max-h-[70vh] overflow-auto whitespace-pre-wrap p-4 text-xs leading-relaxed text-muted-foreground">
-                  {report.resumeText}
-                </div>
-              </object>
+              <PdfViewer
+                source={pdfUrl}
+                fallbackText={report.resumeText}
+                className="min-h-[60vh] flex-1 lg:min-h-0"
+              />
             ) : (
               <div className="max-h-[70vh] overflow-auto whitespace-pre-wrap p-4 text-xs leading-relaxed text-muted-foreground">
                 {report.resumeText}

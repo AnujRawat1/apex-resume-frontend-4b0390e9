@@ -3,12 +3,12 @@
  *
  * Talks to the Spring backend documented in API_DOCUMENTATION.md.
  * Base URL is configurable through VITE_API_BASE_URL and defaults to the
- * local backend (http://localhost:8080).
+ * local backend (http://localhost:9000).
  */
 
 export const API_BASE_URL: string =
   (import.meta.env["VITE_API_BASE_URL"] as string | undefined)?.replace(/\/$/, "") ??
-  "http://localhost:8080";
+  "http://localhost:9000";
 
 const ACCESS_KEY = "apex-access-token";
 const REFRESH_KEY = "apex-refresh-token";

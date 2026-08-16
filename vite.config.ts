@@ -7,6 +7,9 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
+  // Local dev runs on http://localhost:5173 (matches the backend's OAuth redirect URL).
+  // Note: the hosted Lovable preview overrides the port with its own sandbox value.
+  vite: { server: { port: 5173 } },
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
