@@ -38,6 +38,8 @@ function ensureMapHelpers() {
   }
 }
 
+if (typeof window !== "undefined") ensureMapHelpers();
+
 const MIN_ZOOM = 0.6;
 const MAX_ZOOM = 2.4;
 
