@@ -99,7 +99,8 @@ export function PdfViewer({ source, fallbackText, className }: PdfViewerProps) {
           host.replaceChildren(canvas);
         }
         if (!cancelled) setLoading(false);
-      } catch {
+      } catch (err) {
+        console.error("[PdfViewer] render failed", err);
         if (!cancelled) {
           setFailed(true);
           setLoading(false);
