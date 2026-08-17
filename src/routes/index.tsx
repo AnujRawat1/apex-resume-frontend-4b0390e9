@@ -14,7 +14,6 @@ import { LandingNav } from "@/components/landing-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { Typewriter } from "@/components/typewriter";
 import { useAuth } from "@/lib/auth-provider";
-import heroAsset from "@/assets/apexhire-hero.png.asset.json";
 
 const HERO_PHRASES = [
   "Career Journey.",
@@ -193,7 +192,7 @@ function Landing() {
           <div className="relative">
             <div className="hero-radial left-1/2 top-1/2 size-[120%] -translate-x-1/2 -translate-y-1/2 opacity-70" />
             <img
-              src={heroAsset.url}
+              src="/Landing.png"
               alt="ApexHire dashboard showing ATS score, resume match and interview score"
               width={1536}
               height={1024}

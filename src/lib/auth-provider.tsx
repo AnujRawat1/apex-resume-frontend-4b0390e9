@@ -41,7 +41,10 @@ const DEMO_USER = {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 function toApexUser(api: ApiUser): ApexUser {
-  const username = (api.email.split("@")[0] ?? api.name).replace(/[^a-zA-Z0-9_.-]/g, "");
+  const name = api.name ?? api.email.split("@")[0];
+  const firstName = name.split(/\s+/)[0];
+  const username = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase()
+    .replace(/[^a-zA-Z0-9_.-]/g, "");
   return { id: api.id, fullName: api.name, username, email: api.email };
 }
 
