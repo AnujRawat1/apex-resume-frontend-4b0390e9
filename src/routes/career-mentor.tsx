@@ -103,11 +103,12 @@ function MentorContent() {
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         {/* Conversation */}
-        <section className="surface-card animate-fade-up flex min-h-[60vh] flex-col overflow-hidden lg:h-[calc(100vh-16rem)]">
+        <section className="surface-card animate-fade-up flex min-h-[60vh] flex-col overflow-hidden lg:h-[calc(100vh-16rem)] lg:max-h-[720px]">
           <div className="flex items-center gap-3 border-b border-border px-4 py-3">
             <span className="grid size-9 place-items-center rounded-xl bg-gradient-primary text-primary-foreground shadow-soft">
-              <Sparkles className="size-4" />
+              <GraduationCap className="size-4" />
             </span>
+
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold">Career Mentor</p>
               <p className="truncate text-xs text-muted-foreground">
