@@ -5,7 +5,6 @@ import {
   FileText,
   GraduationCap,
   Send,
-  Sparkles,
   Target,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
